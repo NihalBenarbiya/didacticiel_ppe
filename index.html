@@ -366,7 +366,7 @@
   <footer>Didacticiel · Informatique Collège · Maroc</footer>
 
   <script>
-    const API_KEY = "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";
+   const API_KEY = localStorage.getItem("groq_api_key") || "";
 
     async function decoder() {
       const consigne = document.getElementById("consigne").value.trim();
@@ -404,19 +404,12 @@ Règles :
 Consigne à analyser : "${consigne}"`;
 
       try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${API_KEY}`
-          },
-          body: JSON.stringify({
-            model: "llama-3.3-70b-versatile",
-            messages: [{ role: "user", content: prompt }]
-          })
-        });
-
-        const data = await response.json();
+        const response = await fetch("/api/decode", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ consigne })
+});
+const data = await response.json();
         if (!data.choices) throw new Error("Erreur API : " + JSON.stringify(data.error));
 
         const text = data.choices[0].message.content;
