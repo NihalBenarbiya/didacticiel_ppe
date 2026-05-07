@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Didacticiel — Activités</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f0f4ff;
+      --surface: #ffffff;
+      --surface2: #f5f7ff;
+      --accent: #3b6ff0;
+      --accent2: #6c47e8;
+      --accent-light: #e8eefe;
+      --text: #1a1f36;
+      --muted: #7b8299;
+      --border: #dde3f5;
+      --radius: 12px;
+      --font: 'Sora', sans-serif;
+      --mono: 'Space Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 6px rgba(60,80,180,0.06);
+    }
+
+    .nav-brand {
+      font-family: var(--mono);
+      font-size: 15px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: auto;
+      text-decoration: none;
+    }
+    .nav-brand span { color: var(--accent2); }
+
+    .nav-links { display: flex; gap: 4px; }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 8px;
+      transition: all 0.18s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a:hover { background: var(--accent-light); color: var(--accent); }
+    .nav-links a.active { background: var(--accent); color: #fff; }
+
+    main {
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 48px auto;
+      padding: 0 24px;
+    }
+
+    .page-header { margin-bottom: 36px; }
+
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-header p { color: var(--muted); margin-top: 6px; font-size: 14px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .game-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      box-shadow: 0 2px 8px rgba(60,80,180,0.05);
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 24px rgba(60,80,180,0.12);
+      border-color: var(--accent);
+    }
+
+    .card-img {
+      height: 140px;
+      overflow: hidden;
+      position: relative;
+      background: var(--icon-bg, #e8eefe);
+    }
+
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.28s ease;
+    }
+
+    .game-card:hover .card-img img {
+      transform: scale(1.06);
+    }
+
+    .card-body {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-title { font-weight: 700; font-size: 15px; color: var(--text); }
+    .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 30, 80, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-box {
+      background: var(--surface);
+      width: 100%;
+      max-width: 920px;
+      height: 88vh;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(30,50,150,0.18);
+    }
+
+    .modal-header {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-icon {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .modal-header h3 { font-size: 15px; font-weight: 600; color: var(--text); }
+
+    .close-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .close-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+
+    iframe { flex: 1; width: 100%; border: none; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="index.html">didac<span>tiel</span></a>
+    <div class="nav-links">
+      <a href="index.html">🔍 Décodeur</a>
+      <a href="activity.html" class="active">🎮 Activités</a>
+      <a href="quiz.html">Quiz</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="page-header">
+      <h1>🎮 Bibliothèque d'Activités</h1>
+    </div>
+
+    <div class="grid" id="game-container"></div>
+  </main>
+
+  <footer>Didacticiel · Informatique Collège · Maroc</footer>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <img id="modal-icon" class="modal-icon" src="" alt="" onerror="this.style.display='none'">
+          <h3 id="modal-title">Titre du Jeu</h3>
+        </div>
+        <button class="close-btn" onclick="closeGame()">✕</button>
+      </div>
+      <iframe id="game-frame" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 🛠️ CONFIGURATION : Ajoutez vos jeux ici
+    //
+    // "icon" = numéro de l'icône LearningApps
+    //   → https://learningapps.org/toolicons/77.png
+    //   Changez simplement le numéro pour chaque jeu.
+    //
+    // "color" = couleur du cercle derrière l'icône
+    // ==========================================
+    const games = [
+      {
+        title: "Composant ordinateur",
+        id: "p41irw7ik26",
+        icon: 83,          // ← numéro d'icône LearningApps
+        color: "#dbeafe"   // ← couleur de fond de la carte
+      },
+      {
+        title: "Manipulation des fenêtres",
+        id: "peje7efs326",
+        icon: 93,
+        color: "#dcfce7"
+      },
+      {
+        title: "Configuration des réseaux informatiques",
+        id: "https://learningapps.org/view1059954",
+        icon: 86,
+        color: "#fef3c7"
+      },
+      {
+        title: "Association",
+        id: "p1qwnccuc26",
+        icon: 71,
+        color: "#fce7f3"
+      }
+    ];
+    // ==========================================
+
+    const ICON_BASE = "https://learningapps.org/toolicons/";
+
+    const container = document.getElementById('game-container');
+    const modal     = document.getElementById('modal');
+    const frame     = document.getElementById('game-frame');
+    const titleEl   = document.getElementById('modal-title');
+    const modalIcon = document.getElementById('modal-icon');
+
+    function iconUrl(num) {
+      return `${ICON_BASE}${num}.png`;
+    }
+
+    function init() {
+      container.innerHTML = '';
+      games.forEach(game => {
+        const card = document.createElement('div');
+        card.className = 'game-card';
+        card.onclick = () => openGame(game);
+        card.innerHTML = `
+          <div class="card-img" style="--icon-bg:${game.color}">
+            <img
+              src="${iconUrl(game.icon)}"
+              alt="${game.title}"
+              onerror="this.src=''; this.parentElement.style.background='${game.color}'"
+            >
+          </div>
+          <div class="card-body">
+            <div class="card-title">${game.title}</div>
+            <div class="card-sub">Cliquer pour jouer ▶</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openGame(game) {
+      titleEl.textContent = game.title;
+      modalIcon.src = iconUrl(game.icon);
+      modalIcon.alt = game.title;
+      modalIcon.style.display = '';
+
+      let url = game.id;
+      if (url.includes("http")) {
+        frame.src = url;
+      } else {
+        frame.src = `https://learningapps.org/watch?v=${url}`;
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeGame() {
+      modal.style.display = 'none';
+      frame.src = '';
+    }
+
+    modal.onclick = e => { if (e.target === modal) closeGame(); };
+    init();
+  </script>
+</body>
+</html>
