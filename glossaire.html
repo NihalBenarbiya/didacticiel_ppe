@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossaire Informatique — Didacticiel</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    :root {
+      --green: #059669; --green-bg: #d1fae5;
+      --orange: #d97706; --orange-bg: #fef3c7;
+      --purple: #7c3aed; --purple-bg: #ede9fe;
+      --red: #dc2626;    --red-bg: #fee2e2;
+    }
+
+    main { flex: 1; max-width: 1100px; width: 100%; margin: 40px auto; padding: 0 24px; }
+
+    /* ── Controls bar ── */
+    .controls-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; }
+    .search-wrap { flex: 1; min-width: 220px; position: relative; }
+    .search-wrap input {
+      width: 100%; padding: 10px 16px 10px 40px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: var(--font); font-size: 14px;
+      background: var(--surface); color: var(--text);
+      outline: none; transition: border-color 0.18s;
+    }
+    .search-wrap input:focus { border-color: var(--accent); }
+    .search-wrap::before { content: "🔍"; position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
+    .alpha-filter { display: flex; flex-wrap: wrap; gap: 4px; }
+    .alpha-btn { width: 32px; height: 32px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--surface); font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+    .alpha-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+    .alpha-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Stats ── */
+    .stats-bar { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stat-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 99px; padding: 6px 16px; font-size: 12px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+    .stat-chip span { color: var(--accent); font-family: var(--mono); }
+
+    /* ── Letter group ── */
+    .letter-group { margin-bottom: 40px; }
+    .letter-anchor { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--accent); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); display: flex; align-items: center; gap: 10px; }
+    .letter-count { font-size: 12px; color: var(--muted); font-family: var(--font); font-weight: 600; background: var(--accent-light); padding: 2px 10px; border-radius: 99px; }
+
+    /* ── Term cards grid ── */
+    .terms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+    /* ── Term card ── */
+    .term-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s; cursor: pointer; animation: fadeUp 0.3s ease both; }
+    .term-card:hover { box-shadow: 0 8px 28px rgba(59,111,240,0.13); border-color: var(--accent); transform: translateY(-2px); }
+    .term-card.expanded { border-color: var(--accent); box-shadow: 0 8px 28px rgba(59,111,240,0.15); }
+    .term-card.hidden { display: none; }
+    .letter-group.hidden { display: none; }
+
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Card header */
+    .card-head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+    .card-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .card-title-wrap { flex: 1; min-width: 0; }
+    .card-term { font-weight: 700; font-size: 15px; color: var(--text); font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-ar-mini { font-size: 13px; color: var(--accent2); direction: rtl; font-family: 'Segoe UI', Arial, sans-serif; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .icon-btn { width: 32px; height: 32px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--surface2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; flex-shrink: 0; }
+    .icon-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+    .icon-btn.playing { background: var(--accent-light); border-color: var(--accent); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+    /* Card definition preview */
+    .card-def-preview { padding: 0 16px 14px; font-size: 13px; color: var(--muted); line-height: 1.6; border-bottom: 1px solid var(--border); }
+    .card-def-preview.hidden { display: none; }
+
+    /* Expand button */
+    .expand-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; font-size: 12px; color: var(--muted); font-weight: 600; }
+    .expand-row .expand-btn { background: none; border: none; cursor: pointer; font-size: 13px; color: var(--accent); font-weight: 700; font-family: var(--font); display: flex; align-items: center; gap: 4px; padding: 4px 0; transition: opacity 0.15s; }
+    .expand-btn:hover { opacity: 0.75; }
+
+    /* Expanded body */
+    .card-body { display: none; border-top: 1px solid var(--border); padding: 16px; flex-direction: column; gap: 12px; animation: slideDown 0.22s ease; }
+    .card-body.open { display: flex; }
+    .body-section { display: flex; flex-direction: column; gap: 6px; }
+    .body-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .def-full { font-size: 14px; line-height: 1.7; color: var(--text); background: var(--surface2); border-radius: 8px; padding: 12px 14px; }
+    .ar-full { direction: rtl; font-size: 16px; font-family: 'Segoe UI', 'Arabic', Arial, sans-serif; line-height: 1.8; background: linear-gradient(135deg, #f8f3ff 0%, #f0e8fe 100%); border: 1px solid #ddd6fe; border-radius: 8px; padding: 12px 14px; color: var(--text); }
+    .example-box { background: linear-gradient(135deg, var(--green-bg) 0%, #ecfdf5 100%); border: 1px solid #a7f3d0; border-radius: 8px; padding: 11px 14px; font-size: 13px; line-height: 1.6; color: #064e3b; position: relative; }
+    .example-box::before { content: "💡"; font-size: 14px; margin-right: 6px; }
+    .activity-btn { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: linear-gradient(135deg, var(--orange-bg) 0%, #fff7ed 100%); border: 1px solid #fcd34d; border-radius: 8px; cursor: pointer; transition: all 0.18s; font-size: 13px; font-weight: 600; color: var(--orange); font-family: var(--font); text-decoration: none; width: 100%; }
+    .activity-btn:hover { background: linear-gradient(135deg, #fde68a 0%, var(--orange-bg) 100%); box-shadow: 0 4px 12px rgba(217,119,6,0.18); }
+    .activity-btn .btn-icon { font-size: 18px; }
+    .activity-btn .btn-text { flex: 1; }
+    .activity-btn .btn-arrow { opacity: 0.6; }
+    .no-activity { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface2); border: 1.5px dashed var(--border); border-radius: 8px; font-size: 12px; color: var(--muted); }
+
+    /* ── Modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(20,30,80,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(3px); }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--surface); width: 100%; max-width: 900px; height: 85vh; border-radius: 14px; display: flex; flex-direction: column; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 24px 60px rgba(30,50,150,0.2); }
+    .modal-head { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .modal-head h3 { font-size: 15px; font-weight: 700; }
+    .close-btn { width: 32px; height: 32px; border: 1px solid var(--border); background: none; border-radius: 6px; cursor: pointer; font-size: 16px; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .close-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+    .modal-box iframe { flex: 1; border: none; }
+
+    /* ── Empty state ── */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <script>window.NAV_ACTIVE = "glossaire";</script>
+
+  <main>
+    <div class="page-header">
+      <h1>📖 Glossaire Informatique</h1>
+      <p>Termes essentiels du programme collège — définition, traduction arabe, exemples et activités interactives</p>
+    </div>
+
+    <div class="controls-bar">
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Rechercher un terme…" oninput="filterTerms()" autocomplete="off">
+      </div>
+      <div class="alpha-filter" id="alphaFilter"></div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-chip">📚 Total : <span id="totalCount">0</span> termes</div>
+      <div class="stat-chip">🔍 Affichés : <span id="visibleCount">0</span></div>
+    </div>
+
+    <div id="glossaryRoot"></div>
+    <div id="emptyState" class="empty-state" style="display:none">
+      <div class="empty-icon">🔍</div>
+      <h3>Aucun terme trouvé</h3>
+      <p>Essayez un autre mot-clé.</p>
+    </div>
+  </main>
+
+  <!-- LearningApps Modal -->
+  <div class="modal-overlay" id="activityModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modalTitle">Activité</h3>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <iframe id="modalFrame" src="" allow="fullscreen"></iframe>
+    </div>
+  </div>
+
+  <script src="nav.js"></script>
+  <script src="glossary-data.js"></script>
+  <script>
+    const root = document.getElementById('glossaryRoot');
+    const LA_BASE = "https://learningapps.org/watch?v=";
+
+    function buildGlossary() {
+      const letters = {};
+      GLOSSARY.forEach(item => {
+        const l = item.term[0].toUpperCase();
+        if (!letters[l]) letters[l] = [];
+        letters[l].push(item);
+      });
+
+      // Alphabet buttons
+      const alphaDiv = document.getElementById('alphaFilter');
+      const allBtn = document.createElement('button');
+      allBtn.className = 'alpha-btn active';
+      allBtn.textContent = 'Tout';
+      allBtn.onclick = () => { filterByLetter(null); setActiveAlpha(allBtn); };
+      alphaDiv.appendChild(allBtn);
+
+      Object.keys(letters).sort().forEach(l => {
+        const btn = document.createElement('button');
+        btn.className = 'alpha-btn';
+        btn.textContent = l;
+        btn.onclick = () => { filterByLetter(l); setActiveAlpha(btn); };
+        alphaDiv.appendChild(btn);
+      });
+
+      // Render groups
+      let delay = 0;
+      Object.keys(letters).sort().forEach(letter => {
+        const group = document.createElement('div');
+        group.className = 'letter-group';
+        group.dataset.letter = letter;
+        group.innerHTML = `<div class="letter-anchor">${letter}<span class="letter-count">${letters[letter].length} terme${letters[letter].length > 1 ? 's' : ''}</span></div>`;
+        const grid = document.createElement('div');
+        grid.className = 'terms-grid';
+        letters[letter].forEach(item => { grid.appendChild(buildCard(item, delay)); delay += 30; });
+        group.appendChild(grid);
+        root.appendChild(group);
+      });
+
+      updateCounts();
+    }
+
+    function buildCard(item, delay) {
+      const card = document.createElement('div');
+      card.className = 'term-card';
+      card.dataset.term = item.term.toLowerCase();
+      card.style.animationDelay = delay + 'ms';
+      const hasActivity = item.activity && item.activity.id;
+      card.innerHTML = `
+        <div class="card-head">
+          <div class="card-icon" style="background:${item.color}">${item.icon}</div>
+          <div class="card-title-wrap">
+            <div class="card-term">${item.term}</div>
+            <div class="card-ar-mini">${item.ar.split('—')[0].trim()}</div>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn audio-btn" title="Prononcer" onclick="speakTerm(event, '${item.term.replace(/'/g,"\\'")}')">🔊</button>
+            <button class="icon-btn expand-toggle" title="Développer" onclick="toggleCard(event, this)">▼</button>
+          </div>
+        </div>
+        <div class="card-def-preview">${item.def.substring(0, 90)}${item.def.length > 90 ? '…' : ''}</div>
+        <div class="expand-row">
+          <span style="font-size:11px">${hasActivity ? '🎮 Activité disponible' : ''}</span>
+          <button class="expand-btn" onclick="toggleCard(event, this.closest('.term-card').querySelector('.expand-toggle'))">Voir plus ▼</button>
+        </div>
+        <div class="card-body">
+          <div class="body-section"><div class="body-label">📖 Définition complète</div><div class="def-full">${item.def}</div></div>
+          <div class="body-section"><div class="body-label">🌐 Traduction arabe</div><div class="ar-full">${item.ar}</div></div>
+          <div class="body-section"><div class="body-label">💡 Exemple concret</div><div class="example-box">${item.example}</div></div>
+          ${hasActivity
+            ? `<div class="body-section"><div class="body-label">🎮 Mini activité</div>
+               <button class="activity-btn" onclick="openActivity(event, '${item.activity.id}', '${item.activity.title.replace(/'/g,"\\'")}')">
+                 <span class="btn-icon">🎯</span><span class="btn-text">${item.activity.title}</span><span class="btn-arrow">▶</span>
+               </button></div>`
+            : `<div class="body-section"><div class="body-label">🎮 Mini activité</div>
+               <div class="no-activity">➕ Activité à venir — ajoutez un code LearningApps dans glossary-data.js</div></div>`
+          }
+        </div>`;
+      return card;
+    }
+
+    function toggleCard(e, btn) {
+      e.stopPropagation();
+      const card = btn.closest('.term-card');
+      const body = card.querySelector('.card-body');
+      const preview = card.querySelector('.card-def-preview');
+      const expandRow = card.querySelector('.expand-row');
+      const isOpen = body.classList.contains('open');
+      body.classList.toggle('open', !isOpen);
+      card.classList.toggle('expanded', !isOpen);
+      btn.textContent = isOpen ? '▼' : '▲';
+      preview.classList.toggle('hidden', !isOpen);
+      if (expandRow) expandRow.style.display = !isOpen ? 'none' : 'flex';
+    }
+
+    function speakTerm(e, term) {
+      e.stopPropagation();
+      if (!window.speechSynthesis) return;
+      const btn = e.currentTarget;
+      btn.classList.add('playing');
+      const utter = new SpeechSynthesisUtterance(term);
+      utter.lang = 'fr-FR'; utter.rate = 0.9;
+      utter.onend = () => btn.classList.remove('playing');
+      utter.onerror = () => btn.classList.remove('playing');
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utter);
+    }
+
+    function openActivity(e, id, title) {
+      e.stopPropagation();
+      const url = id.startsWith('http') ? id : LA_BASE + id;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalFrame').src = url;
+      document.getElementById('activityModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('activityModal').classList.remove('open');
+      document.getElementById('modalFrame').src = '';
+    }
+
+    document.getElementById('activityModal').onclick = e => {
+      if (e.target === document.getElementById('activityModal')) closeModal();
+    };
+
+    function filterTerms() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      let visible = 0;
+      document.querySelectorAll('.letter-group').forEach(group => {
+        let groupVisible = 0;
+        group.querySelectorAll('.term-card').forEach(card => {
+          const match = !q || card.dataset.term.includes(q);
+          card.classList.toggle('hidden', !match);
+          if (match) groupVisible++;
+        });
+        group.classList.toggle('hidden', groupVisible === 0);
+        visible += groupVisible;
+      });
+      document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+      document.getElementById('visibleCount').textContent = visible;
+    }
+
+    let activeLetter = null;
+    function filterByLetter(letter) {
+      activeLetter = letter;
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.term-card').forEach(c => c.classList.remove('hidden'));
+      let visible = 0;
+      document.querySelectorAll('.letter-group').forEach(group => {
+        const show = !letter || group.dataset.letter === letter;
+        group.classList.toggle('hidden', !show);
+        if (show) visible += group.querySelectorAll('.term-card').length;
+      });
+      if (!letter) visible = GLOSSARY.length;
+      document.getElementById('visibleCount').textContent = visible;
+      document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    function setActiveAlpha(btn) {
+      document.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function updateCounts() {
+      document.getElementById('totalCount').textContent = GLOSSARY.length;
+      document.getElementById('visibleCount').textContent = GLOSSARY.length;
+    }
+
+    buildGlossary();
+  </script>
+</body>
+</html>

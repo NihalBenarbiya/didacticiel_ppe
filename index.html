@@ -4,101 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Décodeur de consignes — Didacticiel</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
   <style>
-    :root {
-      --bg: #f0f4ff;
-      --surface: #ffffff;
-      --surface2: #f5f7ff;
-      --accent: #3b6ff0;
-      --accent2: #6c47e8;
-      --accent-light: #e8eefe;
-      --text: #1a1f36;
-      --muted: #7b8299;
-      --border: #dde3f5;
-      --radius: 12px;
-      --font: 'Sora', sans-serif;
-      --mono: 'Space Mono', monospace;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ── Nav (identical to activity.html) ── */
-    nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: 0 32px;
-      height: 60px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 1px 6px rgba(60,80,180,0.06);
-    }
-
-    .nav-brand {
-      font-family: var(--mono);
-      font-size: 15px;
-      color: var(--accent);
-      font-weight: 700;
-      margin-right: auto;
-      text-decoration: none;
-    }
-    .nav-brand span { color: var(--accent2); }
-
-    .nav-links { display: flex; gap: 4px; }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 8px;
-      transition: all 0.18s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-links a:hover { background: var(--accent-light); color: var(--accent); }
-    .nav-links a.active { background: var(--accent); color: #fff; }
-
-    /* ── Main layout ── */
     main {
       flex: 1;
       max-width: 760px;
       width: 100%;
       margin: 48px auto;
       padding: 0 24px;
-    }
-
-    .page-header { margin-bottom: 32px; }
-
-    .page-header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .page-header p {
-      color: var(--muted);
-      margin-top: 6px;
-      font-size: 14px;
     }
 
     /* ── Input card ── */
@@ -110,7 +23,6 @@
       box-shadow: 0 2px 8px rgba(60,80,180,0.05);
       margin-bottom: 24px;
     }
-
     .input-card label {
       display: block;
       font-size: 13px;
@@ -135,73 +47,39 @@
       outline: none;
       line-height: 1.6;
     }
-
     textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(59,111,240,0.12);
       background: var(--surface);
     }
-
     textarea::placeholder { color: var(--muted); }
 
-    .btn-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-top: 14px;
-    }
+    .btn-row { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
 
-    button {
+    .btn-decode {
       padding: 11px 24px;
       background: var(--accent);
       color: #fff;
       border: none;
       border-radius: 8px;
       font-size: 14px;
-      font-family: var(--font);
       font-weight: 600;
-      cursor: pointer;
-      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
       display: flex;
       align-items: center;
       gap: 8px;
       box-shadow: 0 2px 8px rgba(59,111,240,0.18);
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
     }
-
-    button:hover:not(:disabled) {
+    .btn-decode:hover:not(:disabled) {
       background: #2a5bda;
       transform: translateY(-1px);
       box-shadow: 0 6px 16px rgba(59,111,240,0.28);
     }
+    .btn-decode:active:not(:disabled) { transform: translateY(0); }
+    .btn-decode:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; box-shadow: none; }
 
-    button:active:not(:disabled) { transform: translateY(0); }
-
-    button:disabled {
-      background: var(--border);
-      color: var(--muted);
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .loading-tag {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-tag { display: none; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); font-style: italic; }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
 
     /* ── Result sections ── */
     #result { display: flex; flex-direction: column; gap: 14px; }
@@ -214,90 +92,20 @@
       box-shadow: 0 2px 8px rgba(60,80,180,0.05);
       animation: fadeUp 0.3s ease both;
     }
+    .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .section-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .section h2 { font-size: 14px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 0.04em; }
+    .section p, .section li { font-size: 14px; color: var(--text); line-height: 1.7; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .section-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-    }
-
-    .section h2 {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .section p, .section li {
-      font-size: 14px;
-      color: var(--text);
-      line-height: 1.7;
-    }
-
-    /* Verbes */
-    .verbes-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .verbe-chip {
-      background: var(--accent-light);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 13px;
-    }
-
-    .verbe-chip strong {
-      color: var(--accent);
-      font-weight: 700;
-    }
-
+    .verbes-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .verbe-chip { background: var(--accent-light); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+    .verbe-chip strong { color: var(--accent); font-weight: 700; }
     .verbe-chip span { color: var(--muted); }
 
-    /* Checklist */
-    .checklist {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; }
+    .checklist input[type="checkbox"] { margin-top: 3px; width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
 
-    .checklist li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .checklist input[type="checkbox"] {
-      margin-top: 3px;
-      width: 15px;
-      height: 15px;
-      accent-color: var(--accent);
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    /* Arabic */
     .arabic {
       direction: rtl;
       font-size: 17px;
@@ -310,35 +118,13 @@
       padding: 14px 16px;
     }
 
-    /* Error */
-    .error-msg {
-      background: #fff0f0;
-      border: 1px solid #ffc0c0;
-      border-radius: var(--radius);
-      padding: 16px 20px;
-      color: #c0392b;
-      font-size: 14px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: var(--muted);
-      font-size: 12px;
-      border-top: 1px solid var(--border);
-    }
+    .error-msg { background: #fff0f0; border: 1px solid #ffc0c0; border-radius: var(--radius); padding: 16px 20px; color: #c0392b; font-size: 14px; }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a class="nav-brand" href="index.html">didac<span>tiel</span></a>
-    <div class="nav-links">
-      <a href="index.html" class="active">🔍 Décodeur</a>
-      <a href="activity.html">🎮 Activités</a>
-      <a href="quiz.html">Quiz</a>
-    </div>
-  </nav>
+  <!-- nav.js injecte la navigation automatiquement -->
+  <script>window.NAV_ACTIVE = "index";</script>
 
   <main>
     <div class="page-header">
@@ -350,7 +136,7 @@
       <label for="consigne">Consigne à analyser</label>
       <textarea id="consigne" rows="4" placeholder="Ex : Identifie et classe les différents types de fichiers présents dans le dossier…"></textarea>
       <div class="btn-row">
-        <button onclick="decoder()" id="btn">
+        <button class="btn-decode" onclick="decoder()" id="btn">
           🚀 Décoder la consigne
         </button>
         <div class="loading-tag" id="loading">
@@ -363,11 +149,8 @@
     <div id="result"></div>
   </main>
 
-  <footer>Didacticiel · Informatique Collège · Maroc</footer>
-
+  <script src="nav.js"></script>
   <script>
-   const API_KEY = localStorage.getItem("groq_api_key") || "";
-
     async function decoder() {
       const consigne = document.getElementById("consigne").value.trim();
       if (!consigne) { alert("Écris d'abord une consigne !"); return; }
@@ -379,37 +162,13 @@
       loading.style.display = "flex";
       document.getElementById("result").innerHTML = "";
 
-      const prompt = `Tu es un assistant pédagogique pour élèves de collège au Maroc.
-Analyse cette consigne d'informatique en français 
-et réponds EXACTEMENT dans ce format JSON (sans texte avant ou après) :
-{
-  "verbes": [
-    {
-      "verbe": "...",
-      "explication": "...",
-      "traduction_ar": "..."
-    }
-  ],
-  "checklist": ["...", "..."],
-  "traduction": "..."
-}
-
-Règles :
-- "verbes" : liste TOUS les verbes d'action présents dans la consigne (autant qu'il y en a, ni plus ni moins).
-- "explication" : courte définition en français simple pour un élève de 12 ans.
-- "traduction_ar" : traduction du verbe ET de son explication en arabe standard (الفصحى).
-- "checklist" : décompose la consigne en étapes concrètes à réaliser (autant d'étapes que nécessaire).
-- "traduction" : traduction complète de la consigne en arabe standard.
-
-Consigne à analyser : "${consigne}"`;
-
       try {
         const response = await fetch("/api/decode", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ consigne })
-});
-const data = await response.json();
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ consigne })
+        });
+        const data = await response.json();
         if (!data.choices) throw new Error("Erreur API : " + JSON.stringify(data.error));
 
         const text = data.choices[0].message.content;
@@ -426,20 +185,18 @@ const data = await response.json();
 
     function afficherResultat(data) {
       const verbesHTML = data.verbes.map(v =>
-  `<div class="verbe-chip">
-    <strong>${v.verbe}</strong>
-    <span>= ${v.explication}</span>
-    <div class="arabic" style="font-size:13px; padding: 4px 8px; margin-top:6px;">${v.traduction_ar}</div>
-  </div>`
-).join("");
+        `<div class="verbe-chip">
+          <strong>${v.verbe}</strong>
+          <span>= ${v.explication}</span>
+          <div class="arabic" style="font-size:13px; padding: 4px 8px; margin-top:6px;">${v.traduction_ar}</div>
+        </div>`
+      ).join("");
 
       const checklistHTML = data.checklist.map((e, i) =>
         `<li><input type="checkbox" id="step${i}"><label for="step${i}">${e}</label></li>`
       ).join("");
 
       document.getElementById("result").innerHTML = `
-   
-
         <div class="section" style="animation-delay:0.07s">
           <div class="section-header">
             <div class="section-icon" style="background:#fef3e8">🔑</div>

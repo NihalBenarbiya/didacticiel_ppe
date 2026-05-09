@@ -4,356 +4,381 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Didacticiel — Activités</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
   <style>
     :root {
-      --bg: #f0f4ff;
-      --surface: #ffffff;
-      --surface2: #f5f7ff;
-      --accent: #3b6ff0;
-      --accent2: #6c47e8;
-      --accent-light: #e8eefe;
-      --text: #1a1f36;
-      --muted: #7b8299;
-      --border: #dde3f5;
-      --radius: 12px;
-      --font: 'Sora', sans-serif;
-      --mono: 'Space Mono', monospace;
+      --c1: #3b6ff0; --c1-bg: #e8eefe; --c1-bdr: #b3c6fb;
+      --c2: #059669; --c2-bg: #d1fae5; --c2-bdr: #6ee7b7;
+      --c3: #d97706; --c3-bg: #fef3c7; --c3-bdr: #fcd34d;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    main { flex: 1; max-width: 1060px; width: 100%; margin: 48px auto; padding: 0 24px; }
 
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    /* ── Level tabs ── */
+    .level-tabs { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+    .level-tab { padding: 9px 22px; border-radius: 99px; border: 2px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.18s; color: var(--muted); font-family: var(--font); }
+    .level-tab[data-lv="1"].active { background: var(--c1-bg); border-color: var(--c1); color: var(--c1); }
+    .level-tab[data-lv="2"].active { background: var(--c2-bg); border-color: var(--c2); color: var(--c2); }
+    .level-tab[data-lv="3"].active { background: var(--c3-bg); border-color: var(--c3); color: var(--c3); }
+    .level-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+    .level-section { display: none; }
+    .level-section.active { display: block; animation: fadeUp 0.22s ease; }
+
+    /* ── Level banner ── */
+    .level-banner { border-radius: var(--radius); padding: 16px 22px; margin-bottom: 30px; display: flex; align-items: center; gap: 14px; }
+    .level-banner[data-lv="1"] { background: #eef3ff; border: 1px solid var(--c1-bdr); }
+    .level-banner[data-lv="2"] { background: #f0fdf8; border: 1px solid var(--c2-bdr); }
+    .level-banner[data-lv="3"] { background: #fffbeb; border: 1px solid var(--c3-bdr); }
+    .level-badge { font-size: 26px; }
+    .level-banner h2 { font-size: 16px; font-weight: 700; }
+    .level-banner p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .level-hours { margin-left: auto; font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 99px; white-space: nowrap; }
+    .level-banner[data-lv="1"] .level-hours { background: var(--c1-bg); color: var(--c1); }
+    .level-banner[data-lv="2"] .level-hours { background: var(--c2-bg); color: var(--c2); }
+    .level-banner[data-lv="3"] .level-hours { background: var(--c3-bg); color: var(--c3); }
+
+    /* ── Unit block ── */
+    .unit-block { margin-bottom: 28px; }
+
+    .unit-header {
+      display: flex; align-items: center;
+      padding: 11px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      flex-wrap: wrap; gap: 8px;
+      transition: border-radius 0.22s, border-color 0.22s;
     }
+    .unit-header[data-lv="1"] { background: linear-gradient(90deg,#eef3ff 0%,var(--surface) 100%); border-color: var(--c1-bdr); }
+    .unit-header[data-lv="2"] { background: linear-gradient(90deg,#f0fdf8 0%,var(--surface) 100%); border-color: var(--c2-bdr); }
+    .unit-header[data-lv="3"] { background: linear-gradient(90deg,#fffbeb 0%,var(--surface) 100%); border-color: var(--c3-bdr); }
+    .unit-header.panel-open { border-radius: 10px 10px 0 0; border-bottom-color: transparent; }
 
-    nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: 0 32px;
-      height: 60px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 1px 6px rgba(60,80,180,0.06);
-    }
+    .unit-pill { font-family: var(--mono); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px; flex-shrink: 0; }
+    .unit-header[data-lv="1"] .unit-pill { background: var(--c1-bg); color: var(--c1); }
+    .unit-header[data-lv="2"] .unit-pill { background: var(--c2-bg); color: var(--c2); }
+    .unit-header[data-lv="3"] .unit-pill { background: var(--c3-bg); color: var(--c3); }
 
-    .nav-brand {
-      font-family: var(--mono);
-      font-size: 15px;
-      color: var(--accent);
-      font-weight: 700;
-      margin-right: auto;
-      text-decoration: none;
-    }
-    .nav-brand span { color: var(--accent2); }
+    .unit-info { flex: 1; min-width: 160px; }
+    .unit-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .unit-resources { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
 
-    .nav-links { display: flex; gap: 4px; }
+    .unit-comp { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 99px; flex-shrink: 0; }
+    .unit-header[data-lv="1"] .unit-comp { background: var(--c1-bg); color: var(--c1); }
+    .unit-header[data-lv="2"] .unit-comp { background: var(--c2-bg); color: var(--c2); }
+    .unit-header[data-lv="3"] .unit-comp { background: var(--c3-bg); color: var(--c3); }
 
-    .nav-links a {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 8px;
+    .unit-hours-badge { font-family: var(--mono); font-size: 11px; color: var(--muted); flex-shrink: 0; }
+
+    /* ── Ouvrir button ── */
+    .ouvrir-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 15px;
+      border-radius: 7px;
+      font-size: 12px; font-weight: 700;
+      cursor: pointer;
+      border: 1.5px solid;
       transition: all 0.18s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: var(--font);
     }
+    .unit-header[data-lv="1"] .ouvrir-btn { background: var(--c1-bg); color: var(--c1); border-color: var(--c1-bdr); }
+    .unit-header[data-lv="2"] .ouvrir-btn { background: var(--c2-bg); color: var(--c2); border-color: var(--c2-bdr); }
+    .unit-header[data-lv="3"] .ouvrir-btn { background: var(--c3-bg); color: var(--c3); border-color: var(--c3-bdr); }
+    .unit-header[data-lv="1"] .ouvrir-btn:hover,
+    .unit-header[data-lv="1"] .ouvrir-btn.active { background: var(--c1); color: #fff; border-color: var(--c1); }
+    .unit-header[data-lv="2"] .ouvrir-btn:hover,
+    .unit-header[data-lv="2"] .ouvrir-btn.active { background: var(--c2); color: #fff; border-color: var(--c2); }
+    .unit-header[data-lv="3"] .ouvrir-btn:hover,
+    .unit-header[data-lv="3"] .ouvrir-btn.active { background: var(--c3); color: #fff; border-color: var(--c3); }
+    .btn-arrow { transition: transform 0.22s; display: inline-block; }
+    .ouvrir-btn.active .btn-arrow { transform: rotate(180deg); }
 
-    .nav-links a:hover { background: var(--accent-light); color: var(--accent); }
-    .nav-links a.active { background: var(--accent); color: #fff; }
-
-    main {
-      flex: 1;
-      max-width: 1000px;
-      width: 100%;
-      margin: 48px auto;
-      padding: 0 24px;
-    }
-
-    .page-header { margin-bottom: 36px; }
-
-    .page-header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .page-header p { color: var(--muted); margin-top: 6px; font-size: 14px; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 18px;
-    }
-
-    .game-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-      box-shadow: 0 2px 8px rgba(60,80,180,0.05);
-    }
-
-    .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 24px rgba(60,80,180,0.12);
-      border-color: var(--accent);
-    }
-
-    .card-img {
-      height: 140px;
-      overflow: hidden;
-      position: relative;
-      background: var(--icon-bg, #e8eefe);
-    }
-
-    .card-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.28s ease;
-    }
-
-    .game-card:hover .card-img img {
-      transform: scale(1.06);
-    }
-
-    .card-body {
-      padding: 14px 16px;
-      border-top: 1px solid var(--border);
-    }
-
-    .card-title { font-weight: 700; font-size: 15px; color: var(--text); }
-    .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(20, 30, 80, 0.5);
+    /* ── Inline collection panel ── */
+    .collection-panel {
       display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 20px;
-      backdrop-filter: blur(2px);
-    }
-
-    .modal-box {
-      background: var(--surface);
-      width: 100%;
-      max-width: 920px;
-      height: 88vh;
-      border-radius: 14px;
-      display: flex;
       flex-direction: column;
       border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 10px 10px;
       overflow: hidden;
-      box-shadow: 0 24px 60px rgba(30,50,150,0.18);
-    }
-
-    .modal-header {
       background: var(--surface2);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 20px;
+    }
+    .collection-panel.visible {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
+      animation: slideDown 0.26s ease;
+    }
+    .unit-header[data-lv="1"] ~ .collection-panel { border-color: var(--c1-bdr); }
+    .unit-header[data-lv="2"] ~ .collection-panel { border-color: var(--c2-bdr); }
+    .unit-header[data-lv="3"] ~ .collection-panel { border-color: var(--c3-bdr); }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .modal-header-left {
-      display: flex;
-      align-items: center;
+    .panel-toolbar {
+      display: flex; align-items: center;
+      padding: 8px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
       gap: 10px;
     }
+    .panel-title-txt { font-size: 12px; font-weight: 600; color: var(--muted); flex: 1; }
+    .panel-fullscreen-btn {
+      font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 6px;
+      background: var(--surface2); color: var(--muted); border: 1px solid var(--border);
+      text-decoration: none; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .panel-fullscreen-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
 
-    .modal-icon {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      border-radius: 6px;
+    .collection-frame-wrap {
+      position: relative; width: 100%; height: 580px; background: #0f1729;
+    }
+    .collection-frame-wrap iframe {
+      width: 100%; height: 100%; border: none; display: block;
     }
 
-    .modal-header h3 { font-size: 15px; font-weight: 600; color: var(--text); }
-
-    .close-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 16px;
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      flex-shrink: 0;
+    .frame-loading {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; color: #94a3b8; font-size: 13px;
+      pointer-events: none; transition: opacity 0.4s;
     }
-
-    .close-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
-
-    iframe { flex: 1; width: 100%; border: none; }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: var(--muted);
-      font-size: 12px;
-      border-top: 1px solid var(--border);
+    .frame-loading.hidden { opacity: 0; }
+    .spinner {
+      width: 34px; height: 34px;
+      border: 3px solid rgba(255,255,255,0.12);
+      border-top-color: #3b6ff0;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Empty slot ── */
+    .empty-slot {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface2); border: 2px dashed var(--border);
+      border-radius: 0 0 10px 10px; padding: 14px 18px;
+      color: var(--muted); font-size: 12px; line-height: 1.5;
+    }
+    .empty-slot code { font-family: var(--mono); font-size: 10px; background: var(--border); padding: 1px 6px; border-radius: 4px; color: var(--text); white-space: nowrap; }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a class="nav-brand" href="index.html">didac<span>tiel</span></a>
-    <div class="nav-links">
-      <a href="index.html">🔍 Décodeur</a>
-      <a href="activity.html" class="active">🎮 Activités</a>
-      <a href="quiz.html">Quiz</a>
-    </div>
-  </nav>
+  <script>window.NAV_ACTIVE = "activity";</script>
 
   <main>
     <div class="page-header">
       <h1>🎮 Bibliothèque d'Activités</h1>
+      <p>Programme officiel — Informatique Collège Maroc · 30h / niveau</p>
     </div>
 
-    <div class="grid" id="game-container"></div>
+    <div class="level-tabs">
+      <button class="level-tab active" data-lv="1" onclick="switchLevel(1)">🔵 1APIC — 1ère année</button>
+      <button class="level-tab" data-lv="2" onclick="switchLevel(2)">🟢 2APIC — 2ème année</button>
+      <button class="level-tab" data-lv="3" onclick="switchLevel(3)">🟡 3APIC — 3ème année</button>
+    </div>
+
+    <!-- ═══════════ 1APIC ═══════════ -->
+    <div class="level-section active" id="lv-1">
+      <div class="level-banner" data-lv="1">
+        <div class="level-badge">🔵</div>
+        <div>
+          <h2>1APIC — Première Année du Collège</h2>
+          <p>Système informatique · SE · Utilitaires · Traitement de textes · Recherches documentaires</p>
+        </div>
+        <span class="level-hours">30 h</span>
+      </div>
+      <div class="unit-block" data-grid="grid-1-U1-C0">
+        <div class="unit-header" data-lv="1"><span class="unit-pill">U1</span><div class="unit-info"><div class="unit-name">Système informatique</div><div class="unit-resources">Information · Informatique · Système informatique · Connectivité · Logiciels</div></div><span class="unit-comp">C0</span><span class="unit-hours-badge">4 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-1-U1-C31">
+        <div class="unit-header" data-lv="1"><span class="unit-pill">U1</span><div class="unit-info"><div class="unit-name">Système d'exploitation</div><div class="unit-resources">Notions de SE · Gestion des fenêtres · Organisation du bureau</div></div><span class="unit-comp">C31</span><span class="unit-hours-badge">4 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-1-U2-C11a">
+        <div class="unit-header" data-lv="1"><span class="unit-pill">U2</span><div class="unit-info"><div class="unit-name">Utilitaires et fichiers</div><div class="unit-resources">Création d'un fichier de dessin · Création d'un fichier audio</div></div><span class="unit-comp">C11</span><span class="unit-hours-badge">2 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-1-U2-C11b">
+        <div class="unit-header" data-lv="1"><span class="unit-pill">U2</span><div class="unit-info"><div class="unit-name">Traitement de textes</div><div class="unit-resources">Gestion doc · Saisie · Correction linguistique · Mise en forme · Mise en page · Liens hypertextes</div></div><span class="unit-comp">C11</span><span class="unit-hours-badge">14 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-1-U3-C21">
+        <div class="unit-header" data-lv="1"><span class="unit-pill">U3</span><div class="unit-info"><div class="unit-name">Recherches documentaires</div><div class="unit-resources">Recherche d'un fichier sur support · Recherche par contenu · Encyclopédie numérique</div></div><span class="unit-comp">C21 · C22</span><span class="unit-hours-badge">6 h</span></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 2APIC ═══════════ -->
+    <div class="level-section" id="lv-2">
+      <div class="level-banner" data-lv="2">
+        <div class="level-badge">🟢</div>
+        <div>
+          <h2>2APIC — Deuxième Année du Collège</h2>
+          <p>Environnement matériel · SE réseau · Échange d'informations · Tableurs · Programmation Logo</p>
+        </div>
+        <span class="level-hours">30 h</span>
+      </div>
+      <div class="unit-block" data-grid="grid-2-U1-C0">
+        <div class="unit-header" data-lv="2"><span class="unit-pill">U1</span><div class="unit-info"><div class="unit-name">Environnement matériel d'un système informatique</div><div class="unit-resources">Configuration monoposte · Réseau local · Configuration matérielle d'un réseau</div></div><span class="unit-comp">C0</span><span class="unit-hours-badge">4 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-2-U1-C31">
+        <div class="unit-header" data-lv="2"><span class="unit-pill">U1</span><div class="unit-info"><div class="unit-name">Système d'exploitation et réseau local</div><div class="unit-resources">SE réseau · Gestion des utilisateurs · Partage des ressources</div></div><span class="unit-comp">C31</span><span class="unit-hours-badge">2 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-2-U2-C32">
+        <div class="unit-header" data-lv="2"><span class="unit-pill">U2</span><div class="unit-info"><div class="unit-name">Échange d'informations</div><div class="unit-resources">Échange via réseau local · Envoi / Réception de messages dans un réseau local</div></div><span class="unit-comp">C32</span><span class="unit-hours-badge">2 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-2-U3-C12">
+        <div class="unit-header" data-lv="2"><span class="unit-pill">U3</span><div class="unit-info"><div class="unit-name">Tableurs</div><div class="unit-resources">Gestion fichier tableur · Feuilles · Cellules · Adresses · Saisie · Formules · Fonctions · Mise en forme · Graphiques · Impression</div></div><span class="unit-comp">C12</span><span class="unit-hours-badge">12 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-2-U4-C13">
+        <div class="unit-header" data-lv="2"><span class="unit-pill">U4</span><div class="unit-info"><div class="unit-name">Programmation Logo</div><div class="unit-resources">Langages de programmation · Environnement Logo · Primitives de base · Instruction de répétition · Procédures</div></div><span class="unit-comp">C13</span><span class="unit-hours-badge">10 h</span></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ 3APIC ═══════════ -->
+    <div class="level-section" id="lv-3">
+      <div class="level-banner" data-lv="3">
+        <div class="level-badge">🟡</div>
+        <div>
+          <h2>3APIC — Troisième Année du Collège</h2>
+          <p>Topologie réseau · Présentation PAO · Programmation Logo · Recherches Web · Messagerie électronique</p>
+        </div>
+        <span class="level-hours">30 h</span>
+      </div>
+      <div class="unit-block" data-grid="grid-3-U1-C0">
+        <div class="unit-header" data-lv="3"><span class="unit-pill">U1</span><div class="unit-info"><div class="unit-name">Topologie réseau</div><div class="unit-resources">LAN · MAN · WAN</div></div><span class="unit-comp">C0</span><span class="unit-hours-badge">2 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-3-U2-C11">
+        <div class="unit-header" data-lv="3"><span class="unit-pill">U2</span><div class="unit-info"><div class="unit-name">Présentation assistée par ordinateur (PAO)</div><div class="unit-resources">Diapositive · Diaporama · Animation et transition · Insertion d'objets · Création de fichiers multimédia</div></div><span class="unit-comp">C11</span><span class="unit-hours-badge">10 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-3-U3-C13">
+        <div class="unit-header" data-lv="3"><span class="unit-pill">U3</span><div class="unit-info"><div class="unit-name">Programmation Logo</div><div class="unit-resources">Variables · Procédures paramétrées · Structuration de programmes</div></div><span class="unit-comp">C13</span><span class="unit-hours-badge">8 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-3-U4-C23">
+        <div class="unit-header" data-lv="3"><span class="unit-pill">U4</span><div class="unit-info"><div class="unit-name">Recherches documentaires sur le Web</div><div class="unit-resources">Page Web · Sites · WWW · Adresses · Navigateurs · Moteurs de recherche · Téléchargement</div></div><span class="unit-comp">C23</span><span class="unit-hours-badge">6 h</span></div>
+      </div>
+      <div class="unit-block" data-grid="grid-3-U5-C33">
+        <div class="unit-header" data-lv="3"><span class="unit-pill">U5</span><div class="unit-info"><div class="unit-name">Messagerie électronique</div><div class="unit-resources">Courrier électronique · Logiciels de messagerie · Compte · Composition d'un message · Pièces jointes · Réception</div></div><span class="unit-comp">C33</span><span class="unit-hours-badge">4 h</span></div>
+      </div>
+    </div>
   </main>
 
-  <footer>Didacticiel · Informatique Collège · Maroc</footer>
-
-  <div class="modal-overlay" id="modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-header-left">
-          <img id="modal-icon" class="modal-icon" src="" alt="" onerror="this.style.display='none'">
-          <h3 id="modal-title">Titre du Jeu</h3>
-        </div>
-        <button class="close-btn" onclick="closeGame()">✕</button>
-      </div>
-      <iframe id="game-frame" allowfullscreen></iframe>
-    </div>
-  </div>
-
+  <script src="nav.js"></script>
+  <script src="activities-data.js"></script>
   <script>
-    // ==========================================
-    // 🛠️ CONFIGURATION : Ajoutez vos jeux ici
-    //
-    // "icon" = numéro de l'icône LearningApps
-    //   → https://learningapps.org/toolicons/77.png
-    //   Changez simplement le numéro pour chaque jeu.
-    //
-    // "color" = couleur du cercle derrière l'icône
-    // ==========================================
-    const games = [
-      {
-        title: "Composant ordinateur",
-        id: "p41irw7ik26",
-        icon: 83,          // ← numéro d'icône LearningApps
-        color: "#dbeafe"   // ← couleur de fond de la carte
-      },
-      {
-        title: "Manipulation des fenêtres",
-        id: "peje7efs326",
-        icon: 93,
-        color: "#dcfce7"
-      },
-      {
-        title: "Configuration des réseaux informatiques",
-        id: "https://learningapps.org/view1059954",
-        icon: 86,
-        color: "#fef3c7"
-      },
-      {
-        title: "Association",
-        id: "p1qwnccuc26",
-        icon: 71,
-        color: "#fce7f3"
+    // Map gridId → activity
+    const activityMap = {};
+    ACTIVITIES.forEach(a => { activityMap[a.gridId] = a; });
+
+    /**
+     * LearningApps embed URL rules:
+     *   Single app  → https://learningapps.org/watch?v=CODE
+     *   Collection  → https://learningapps.org/watch?id=CODE   ← note: ?id= not ?v=
+     *   Full URL    → used as-is
+     *
+     * The `id` field in activities-data.js can be:
+     *   "pk0j4yef526"                         → single activity  → watch?v=
+     *   "collection:pk0j4yef526"              → collection       → watch?id=
+     *   "https://learningapps.org/watch?..."  → used as-is
+     */
+    function getEmbedUrl(a) {
+      if (a.id.includes('http')) return a.id;
+      if (a.id.startsWith('collection:')) {
+        return `https://learningapps.org/watch?id=${a.id.replace('collection:', '')}`;
       }
-    ];
-    // ==========================================
-
-    const ICON_BASE = "https://learningapps.org/toolicons/";
-
-    const container = document.getElementById('game-container');
-    const modal     = document.getElementById('modal');
-    const frame     = document.getElementById('game-frame');
-    const titleEl   = document.getElementById('modal-title');
-    const modalIcon = document.getElementById('modal-icon');
-
-    function iconUrl(num) {
-      return `${ICON_BASE}${num}.png`;
+      // Default: treat as a collection watch URL (the ?v= format works for both single + collection)
+      return `https://learningapps.org/watch?v=${a.id}`;
     }
 
-    function init() {
-      container.innerHTML = '';
-      games.forEach(game => {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        card.onclick = () => openGame(game);
-        card.innerHTML = `
-          <div class="card-img" style="--icon-bg:${game.color}">
-            <img
-              src="${iconUrl(game.icon)}"
-              alt="${game.title}"
-              onerror="this.src=''; this.parentElement.style.background='${game.color}'"
-            >
-          </div>
-          <div class="card-body">
-            <div class="card-title">${game.title}</div>
-            <div class="card-sub">Cliquer pour jouer ▶</div>
-          </div>
-        `;
-        container.appendChild(card);
+    function buildAll() {
+      document.querySelectorAll('.unit-block[data-grid]').forEach(block => {
+        const gridId = block.dataset.grid;
+        const header = block.querySelector('.unit-header');
+        const a      = activityMap[gridId];
+
+        if (a) {
+          const url = getEmbedUrl(a);
+
+          // ── Ouvrir button injected into header ──
+          const btn = document.createElement('button');
+          btn.className = 'ouvrir-btn';
+          btn.innerHTML = `▶ Ouvrir <span class="btn-arrow">▾</span>`;
+          header.appendChild(btn);
+
+          // ── Collection panel below header ──
+          const panel = document.createElement('div');
+          panel.className = 'collection-panel';
+          panel.innerHTML = `
+            <div class="panel-toolbar">
+              <span class="panel-title-txt">📚 ${a.title}</span>
+              <a class="panel-fullscreen-btn" href="${url}" target="_blank" rel="noopener">↗ Plein écran</a>
+            </div>
+            <div class="collection-frame-wrap">
+              <div class="frame-loading">
+                <div class="spinner"></div>
+                <span>Chargement…</span>
+              </div>
+              <iframe
+                src=""
+                allowfullscreen
+                allow="fullscreen *; autoplay *"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>`;
+
+          const iframe  = panel.querySelector('iframe');
+          const loading = panel.querySelector('.frame-loading');
+
+          // Hide spinner once content loads (or after timeout as fallback)
+          iframe.addEventListener('load', () => {
+            if (iframe.src) loading.classList.add('hidden');
+          });
+
+          let open = false;
+
+          btn.addEventListener('click', () => {
+            open = !open;
+            btn.classList.toggle('active', open);
+            header.classList.toggle('panel-open', open);
+            panel.classList.toggle('visible', open);
+
+            if (open) {
+              loading.classList.remove('hidden');
+              iframe.src = url;
+              // Fallback: hide spinner after 8 s regardless
+              setTimeout(() => loading.classList.add('hidden'), 8000);
+              setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+            } else {
+              iframe.src = '';
+              loading.classList.remove('hidden');
+            }
+          });
+
+          block.appendChild(panel);
+
+        } else {
+          // ── No activity defined ──
+          header.classList.add('panel-open');
+          const note = document.createElement('div');
+          note.className = 'empty-slot';
+          note.innerHTML = `<span style="font-size:18px">➕</span>
+            <span>Pas encore d'activité — ajoutez-en dans <code>activities-data.js</code> avec <code>gridId: "${gridId}"</code></span>`;
+          block.appendChild(note);
+        }
       });
     }
 
-    function openGame(game) {
-      titleEl.textContent = game.title;
-      modalIcon.src = iconUrl(game.icon);
-      modalIcon.alt = game.title;
-      modalIcon.style.display = '';
-
-      let url = game.id;
-      if (url.includes("http")) {
-        frame.src = url;
-      } else {
-        frame.src = `https://learningapps.org/watch?v=${url}`;
-      }
-
-      modal.style.display = 'flex';
+    function switchLevel(n) {
+      document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.level-tab[data-lv="${n}"]`).classList.add('active');
+      document.querySelectorAll('.level-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`lv-${n}`).classList.add('active');
     }
 
-    function closeGame() {
-      modal.style.display = 'none';
-      frame.src = '';
-    }
-
-    modal.onclick = e => { if (e.target === modal) closeGame(); };
-    init();
+    buildAll();
   </script>
 </body>
 </html>

@@ -1,0 +1,105 @@
+/* ════════════════════════════════════════════════════
+   shared.css — Didacticiel · Styles communs à toutes les pages
+   ════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@400;600;700&display=swap');
+
+:root {
+  --bg: #f0f4ff;
+  --surface: #ffffff;
+  --surface2: #f5f7ff;
+  --accent: #3b6ff0;
+  --accent2: #6c47e8;
+  --accent-light: #e8eefe;
+  --text: #1a1f36;
+  --muted: #7b8299;
+  --border: #dde3f5;
+  --radius: 12px;
+  --font: 'Sora', sans-serif;
+  --mono: 'Space Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Navigation ── */
+nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 6px rgba(60,80,180,0.06);
+}
+
+.nav-brand {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--accent);
+  font-weight: 700;
+  margin-right: auto;
+  text-decoration: none;
+}
+.nav-brand span { color: var(--accent2); }
+
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 8px;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-links a:hover { background: var(--accent-light); color: var(--accent); }
+.nav-links a.active { background: var(--accent); color: #fff; }
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Page header ── */
+.page-header { margin-bottom: 28px; }
+.page-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-header p { color: var(--muted); margin-top: 6px; font-size: 14px; }
+
+/* ── Shared button base ── */
+button {
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+/* ── Animation ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
