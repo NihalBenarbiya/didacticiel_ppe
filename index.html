@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Décodeur de consignes</title>
+  <link rel="stylesheet" href="shared.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #1a1a2e; min-height: 100vh; padding: 40px 16px; }
-    main { max-width: 720px; margin: 0 auto; }
+    main { flex: 1; max-width: 720px; width: 100%; margin: 48px auto; padding: 0 24px; }
     h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
     .subtitle { font-size: 14px; color: #666; margin-bottom: 28px; }
     .card { background: #fff; border: 1px solid #e0e4f0; border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(60,80,180,0.05); }
@@ -39,6 +38,9 @@
   </style>
 </head>
 <body>
+  
+  <script>window.NAV_ACTIVE = "decoder";</script>
+
   <main>
     <h1>🔍 Décodeur de consignes</h1>
     <p class="subtitle">Analyse une consigne d'informatique : verbes d'action, étapes à suivre et traduction en arabe.</p>
@@ -57,7 +59,7 @@
 
     <div id="result"></div>
   </main>
-
+<script src="nav.js"> </script>
   <!-- Chargé uniquement en local (ignoré sur GitHub/Netlify) -->
   <script>
     // Valeur par défaut vide — config.js l'écrase en local
