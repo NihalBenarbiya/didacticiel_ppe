@@ -3,143 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Décodeur de consignes — Didacticiel</title>
-  <link rel="stylesheet" href="shared.css">
+  <title>Décodeur de consignes</title>
   <style>
-    main {
-      flex: 1;
-      max-width: 760px;
-      width: 100%;
-      margin: 48px auto;
-      padding: 0 24px;
-    }
-
-    /* ── Input card ── */
-    .input-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(60,80,180,0.05);
-      margin-bottom: 24px;
-    }
-    .input-card label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-family: var(--font);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      resize: vertical;
-      background: var(--surface2);
-      color: var(--text);
-      transition: border-color 0.18s, box-shadow 0.18s;
-      outline: none;
-      line-height: 1.6;
-    }
-    textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59,111,240,0.12);
-      background: var(--surface);
-    }
-    textarea::placeholder { color: var(--muted); }
-
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6fb; color: #1a1a2e; min-height: 100vh; padding: 40px 16px; }
+    main { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 14px; color: #666; margin-bottom: 28px; }
+    .card { background: #fff; border: 1px solid #e0e4f0; border-radius: 14px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(60,80,180,0.05); }
+    label { display: block; font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+    textarea { width: 100%; padding: 12px 14px; font-size: 14px; font-family: inherit; border: 1.5px solid #dde2f0; border-radius: 10px; resize: vertical; background: #f8f9fc; color: #1a1a2e; outline: none; line-height: 1.6; transition: border-color 0.18s, box-shadow 0.18s; }
+    textarea:focus { border-color: #3b6ff0; box-shadow: 0 0 0 3px rgba(59,111,240,0.12); background: #fff; }
+    textarea::placeholder { color: #aaa; }
     .btn-row { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
-
-    .btn-decode {
-      padding: 11px 24px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 2px 8px rgba(59,111,240,0.18);
-      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
-    }
-    .btn-decode:hover:not(:disabled) {
-      background: #2a5bda;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(59,111,240,0.28);
-    }
-    .btn-decode:active:not(:disabled) { transform: translateY(0); }
-    .btn-decode:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; box-shadow: none; }
-
-    .loading-tag { display: none; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); font-style: italic; }
-    .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
-
-    /* ── Result sections ── */
-    #result { display: flex; flex-direction: column; gap: 14px; }
-
-    .section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      box-shadow: 0 2px 8px rgba(60,80,180,0.05);
-      animation: fadeUp 0.3s ease both;
-    }
+    button { padding: 10px 22px; background: #3b6ff0; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.18s, transform 0.12s, box-shadow 0.18s; box-shadow: 0 2px 8px rgba(59,111,240,0.18); }
+    button:hover:not(:disabled) { background: #2a5bda; transform: translateY(-1px); }
+    button:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
+    .loading { display: none; align-items: center; gap: 8px; font-size: 13px; color: #888; font-style: italic; }
+    .spinner { width: 16px; height: 16px; border: 2px solid #dde2f0; border-top-color: #3b6ff0; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .section { animation: fadeUp 0.3s ease both; background: #fff; border: 1px solid #e0e4f0; border-radius: 14px; padding: 20px 24px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(60,80,180,0.05); }
     .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
     .section-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
-    .section h2 { font-size: 14px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 0.04em; }
-    .section p, .section li { font-size: 14px; color: var(--text); line-height: 1.7; }
-
+    .section h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #333; }
     .verbes-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-    .verbe-chip { background: var(--accent-light); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; }
-    .verbe-chip strong { color: var(--accent); font-weight: 700; }
-    .verbe-chip span { color: var(--muted); }
-
+    .verbe-chip { background: #f0f4ff; border: 1px solid #dde2f0; border-radius: 10px; padding: 10px 14px; font-size: 13px; }
+    .verbe-chip strong { color: #3b6ff0; font-weight: 700; }
+    .verbe-chip .ar { direction: rtl; font-size: 13px; color: #555; margin-top: 4px; line-height: 1.7; }
     .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .checklist li { display: flex; align-items: flex-start; gap: 10px; }
-    .checklist input[type="checkbox"] { margin-top: 3px; width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
-
-    .arabic {
-      direction: rtl;
-      font-size: 17px;
-      font-family: 'Segoe UI', 'Arabic', Arial, sans-serif;
-      color: var(--text);
-      line-height: 1.9;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-
-    .error-msg { background: #fff0f0; border: 1px solid #ffc0c0; border-radius: var(--radius); padding: 16px 20px; color: #c0392b; font-size: 14px; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.6; }
+    .checklist input[type="checkbox"] { margin-top: 3px; width: 15px; height: 15px; accent-color: #3b6ff0; cursor: pointer; flex-shrink: 0; }
+    .arabic-block { direction: rtl; font-size: 17px; font-family: 'Segoe UI', 'Arabic', Arial, sans-serif; color: #1a1a2e; line-height: 2; background: #f8f9fc; border: 1px solid #e0e4f0; border-radius: 10px; padding: 14px 16px; }
+    .error-msg { background: #fff0f0; border: 1px solid #ffc0c0; border-radius: 10px; padding: 14px 18px; color: #c0392b; font-size: 14px; }
   </style>
 </head>
 <body>
-
-  <!-- nav.js injecte la navigation automatiquement -->
-  <script>window.NAV_ACTIVE = "index";</script>
-
   <main>
-    <div class="page-header">
-      <h1>🔍 Décodeur de consignes</h1>
-      <p>Saisir une consigne d'informatique pour la simplifier, identifier les verbes d'action et obtenir les étapes à suivre.</p>
-    </div>
+    <h1>🔍 Décodeur de consignes</h1>
+    <p class="subtitle">Analyse une consigne d'informatique : verbes d'action, étapes à suivre et traduction en arabe.</p>
 
-    <div class="input-card">
+    <div class="card">
       <label for="consigne">Consigne à analyser</label>
       <textarea id="consigne" rows="4" placeholder="Ex : Identifie et classe les différents types de fichiers présents dans le dossier…"></textarea>
       <div class="btn-row">
-        <button class="btn-decode" onclick="decoder()" id="btn">
-          🚀 Décoder la consigne
-        </button>
-        <div class="loading-tag" id="loading">
+        <button onclick="decoder()" id="btn">🚀 Décoder la consigne</button>
+        <div class="loading" id="loading">
           <div class="spinner"></div>
           Analyse en cours…
         </div>
@@ -149,29 +58,75 @@
     <div id="result"></div>
   </main>
 
-  <script src="nav.js"></script>
+  <!-- Chargé uniquement en local (ignoré sur GitHub/Netlify) -->
   <script>
+    // Valeur par défaut vide — config.js l'écrase en local
+    window.GROQ_API_KEY = window.GROQ_API_KEY || null;
+  </script>
+  <script src="config.js" onerror="window.GROQ_API_KEY = null;"></script>
+
+  <script>
+    const IS_LOCAL = location.protocol === "file:";
+
+    const PROMPT_TEMPLATE = (consigne) =>
+      `Tu es un assistant pédagogique. Analyse la consigne informatique suivante et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks, sans texte autour) avec cette structure exacte:
+{
+  "verbes": [
+    { "verbe": "string", "explication": "string en français simple", "traduction_ar": "string en arabe" }
+  ],
+  "checklist": ["étape 1", "étape 2", "..."],
+  "traduction": "traduction complète de la consigne en arabe"
+}
+
+Consigne: ${consigne}`;
+
+    async function callGroqDirect(consigne) {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + window.GROQ_API_KEY
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          temperature: 0.3,
+          max_tokens: 1000,
+          messages: [{ role: "user", content: PROMPT_TEMPLATE(consigne) }]
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || "Erreur API Groq");
+      return data.choices[0].message.content;
+    }
+
+    async function callNetlifyFunction(consigne) {
+      const res = await fetch("/api/decode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ consigne })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || "Erreur API");
+      return data.choices[0].message.content;
+    }
+
     async function decoder() {
       const consigne = document.getElementById("consigne").value.trim();
       if (!consigne) { alert("Écris d'abord une consigne !"); return; }
 
       const btn = document.getElementById("btn");
       const loading = document.getElementById("loading");
-
       btn.disabled = true;
       loading.style.display = "flex";
       document.getElementById("result").innerHTML = "";
 
       try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ consigne })
-        });
-        const data = await response.json();
-        if (!data.choices) throw new Error("Erreur API : " + JSON.stringify(data.error));
+        // Local → appel direct Groq avec la clé de config.js
+        // Netlify → appel via la fonction serverless (clé cachée côté serveur)
+        const text = IS_LOCAL
+          ? await callGroqDirect(consigne)
+          : await callNetlifyFunction(consigne);
 
-        const text = data.choices[0].message.content;
         const json = JSON.parse(text.replace(/```json|```/g, "").trim());
         afficherResultat(json);
       } catch (e) {
@@ -184,43 +139,38 @@
     }
 
     function afficherResultat(data) {
-      const verbesHTML = data.verbes.map(v =>
-        `<div class="verbe-chip">
-          <strong>${v.verbe}</strong>
-          <span>= ${v.explication}</span>
-          <div class="arabic" style="font-size:13px; padding: 4px 8px; margin-top:6px;">${v.traduction_ar}</div>
-        </div>`
-      ).join("");
+      const verbesHTML = data.verbes.map(v => `
+        <div class="verbe-chip">
+          <strong>${v.verbe}</strong> — ${v.explication}
+          <div class="ar">${v.traduction_ar}</div>
+        </div>`).join("");
 
-      const checklistHTML = data.checklist.map((e, i) =>
+      const stepsHTML = data.checklist.map((e, i) =>
         `<li><input type="checkbox" id="step${i}"><label for="step${i}">${e}</label></li>`
       ).join("");
 
       document.getElementById("result").innerHTML = `
-        <div class="section" style="animation-delay:0.07s">
+        <div class="section" style="animation-delay:0.05s">
           <div class="section-header">
             <div class="section-icon" style="background:#fef3e8">🔑</div>
             <h2>Verbes d'action</h2>
           </div>
           <div class="verbes-grid">${verbesHTML}</div>
         </div>
-
-        <div class="section" style="animation-delay:0.14s">
+        <div class="section" style="animation-delay:0.12s">
           <div class="section-header">
             <div class="section-icon" style="background:#e8fef0">✅</div>
             <h2>Étapes à suivre</h2>
           </div>
-          <ul class="checklist">${checklistHTML}</ul>
+          <ul class="checklist">${stepsHTML}</ul>
         </div>
-
-        <div class="section" style="animation-delay:0.21s">
+        <div class="section" style="animation-delay:0.19s">
           <div class="section-header">
             <div class="section-icon" style="background:#f0e8fe">🌐</div>
             <h2>Traduction en arabe</h2>
           </div>
-          <p class="arabic">${data.traduction}</p>
-        </div>
-      `;
+          <p class="arabic-block">${data.traduction}</p>
+        </div>`;
     }
   </script>
 </body>
