@@ -694,47 +694,11 @@ async function decoder() {
   loading.style.display = "flex";
   document.getElementById("result").innerHTML = "";
 
-  const apiKey = window.GROQ_API_KEY;
-  if (!apiKey) {
-    document.getElementById("result").innerHTML = `<div class="error-msg">❌ Clé API Groq introuvable. Vérifie que config.js est chargé.</div>`;
-    btn.disabled = false;
-    loading.style.display = "none";
-    return;
-  }
-
-  const prompt = `Tu es un assistant pédagogique. Analyse la consigne scolaire suivante et réponds UNIQUEMENT en JSON valide, sans aucun texte avant ou après.
-
-Consigne : "${consigne}"
-
-Retourne un objet JSON avec exactement cette structure :
-{
-  "verbes": [
-    { "verbe": "NomDuVerbe", "explication": "Ce que ce verbe demande à l'élève de faire", "traduction_ar": "الترجمة بالعربية" }
-  ],
-  "checklist": ["Étape 1", "Étape 2", "Étape 3"],
-  "traduction": "Traduction complète de la consigne en arabe"
-}
-
-Règles :
-- Identifie tous les verbes d'action présents dans la consigne (ex: identifier, classer, créer, décrire, comparer…)
-- Si aucun verbe d'action explicite n'est trouvé, déduis l'action principale implicite
-- La checklist doit lister les étapes concrètes pour répondre à CETTE consigne spécifique
-- La traduction doit être en arabe dialectal marocain ou arabe standard, naturelle et précise
-- Réponds uniquement avec du JSON valide`;
-
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("/api/decode", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.3,
-        max_tokens: 800
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ consigne })
     });
 
     if (!response.ok) {
@@ -791,7 +755,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- ── nav.js integration: set active page then load the script ── -->
-<script src="config.js"></script>
 <script>window.NAV_ACTIVE = "index";</script>
 <script src="nav.js"></script>
 
