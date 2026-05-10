@@ -12,7 +12,7 @@
     { href: "index.html",     icon: "🔍", label: "Décodeur",  key: "index"     },
     { href: "glossaire.html", icon: "📖", label: "Glossaire", key: "glossaire" },
     { href: "activity.html",  icon: "🎮", label: "Activités", key: "activity"  },
-    { href: "quiz.html",      icon: "",   label: "Quiz",      key: "quiz"      },
+    { href: "quiz.html",      icon: "❓",   label: "Quiz",      key: "quiz"      },
   ];
 
   /** Detect current page from URL or NAV_ACTIVE override */
