@@ -5,7 +5,7 @@ export default async (req) => {
 
   const key = process.env.GROQ_API_KEY;
   if (!key) {
-    return new Response(JSON.stringify({ error: { message: "GROQ_API_KEY non définie dans les variables Netlify" } }), {
+    return new Response(JSON.stringify({ error: { message: "GROQ_API_KEY non définie" } }), {
       status: 500, headers: { "Content-Type": "application/json" }
     });
   }
@@ -13,16 +13,33 @@ export default async (req) => {
   const { consigne } = await req.json();
   if (!consigne) return new Response("Missing consigne", { status: 400 });
 
-  const prompt = `Tu es un assistant pédagogique. Analyse la consigne informatique suivante et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks, sans texte autour) avec cette structure exacte:
-{
-  "verbes": [
-    { "verbe": "string", "explication": "string en français simple", "traduction_ar": "string en arabe" }
-  ],
-  "checklist": ["étape 1", "étape 2", "..."],
-  "traduction": "traduction complète de la consigne en arabe"
-}
+  // ═══ IMPROVED PROMPT ════════════════════════════════
+  // We split into System (Persona) and User (Task) for better adherence
+  const systemPrompt = `
+    Tu es un assistant pédagogique expert pour des élèves arabophones apprenant l'informatique.
+    Tu DOIS retourner UNIQUEMENT un objet JSON valide (sans markdown, sans texte autour).
 
-Consigne: ${consigne}`;
+    RÈGLES STRICTES À SUIVRE :
+    1. **Checklist (Étapes)** :
+       - Décompose la consigne en actions TRÈS SIMPLES.
+       - Chaque étape DOIT commencer par un verbe à l'infinitif (Ex: "Ouvrir le dossier", "Sélectionner le texte").
+       - Le style doit être pédagogique et facile à lire.
+
+    2. **Traduction Arabe** :
+       - Utilise IMPÉRATIVEMENT l'arabe littéraire (Fusha).
+       - Utilise le VOCABULAIRE INFORMATIQUE EXACT (ex: "Fichier" -> "ملف", "Dossier" -> "مجلد", "Clique" -> "انقر", "Enregistrer" -> "حفظ").
+       - Ne traduis pas mot à mot si le sens technique est différent.
+
+    3. **Verbes** :
+       - Identifie les verbes d'action principaux.
+       - Donne une explication simple en français.
+  `;
+
+  const userPrompt = `
+    Analyse la consigne suivante et retourne le JSON :
+    "${consigne}"
+  `;
+  // ════════════════════════════════════════════════════
 
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
@@ -32,15 +49,28 @@ Consigne: ${consigne}`;
     },
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
+      temperature: 0.2, // Lower temperature for more deterministic/factual results
       max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }]
+      // Using the messages array properly
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ]
     })
   });
 
   const data = await res.json();
+  
+  // Error handling if API fails
+  if (!res.ok) {
+    return new Response(JSON.stringify(data), {
+      status: res.status,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
   return new Response(JSON.stringify(data), {
-    status: res.status,
+    status: 200,
     headers: { "Content-Type": "application/json" }
   });
 };
