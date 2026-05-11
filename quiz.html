@@ -33,7 +33,7 @@
     color: var(--text);
   }
 
-  /* ── NAV (matches site exactly) ── */
+  /* ── NAV ── */
   nav {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -99,7 +99,22 @@
     text-align: center;
   }
 
-  .entry-emoji { font-size: 36px; margin-bottom: 16px; display: block; }
+  /* Added missing style for badge */
+  .entry-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 16px;
+  }
+  .entry-badge svg { stroke: var(--accent); }
 
   .entry-title {
     font-size: 22px;
@@ -179,6 +194,17 @@
   #screen-quiz { flex-direction: column; background: var(--bg); }
 
   .quiz-subbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  
+  /* Added missing header styles */
+  .quiz-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -362,9 +388,13 @@ function showSuccess(score) {
   document.getElementById("score-display").textContent = score + "%";
   document.getElementById("success-name").textContent  = studentName;
   document.getElementById("success-class").textContent = studentClass;
+  
   var total = JSON.parse(localStorage.getItem("quizResults") || "[]").length;
+  
+  // FIXED: This element was missing in HTML, causing the crash
   document.getElementById("results-count").innerHTML =
     "<strong>" + total + "</strong> résultat" + (total > 1 ? "s" : "") + " enregistré" + (total > 1 ? "s" : "") + " au total";
+    
   setScreen("screen-success");
   setTimeout(function(){ exportExcel(); }, 800);
 }
@@ -528,8 +558,9 @@ document.addEventListener("DOMContentLoaded", function(){
   <a class="nav-brand" href="index.html">didac<span>tiel</span></a>
   <div class="nav-links">
     <a href="index.html">🔍 Décodeur</a>
-    <a href="glossaire.html">📖 Glossaire</a>
+      <a href="glossaire.html" >📖 Glossaire</a>
     <a href="activity.html" >🎮 Activités</a>
+      
     <a href="quiz.html" class="active"> Quiz</a>
   </div>
 </nav>
@@ -570,10 +601,6 @@ document.addEventListener("DOMContentLoaded", function(){
       </div>
       <span class="class-chip" id="header-class">—</span>
     </div>
-
-
-
-   
   </div>
 
   <div class="quiz-frame-wrapper">
@@ -605,6 +632,8 @@ document.addEventListener("DOMContentLoaded", function(){
       Déconnexion — Élève suivant
     </button>
 
+    <!-- FIXED: Added missing container for the results count text -->
+    <div class="results-count" id="results-count"></div>
   </div>
 </div>
 
