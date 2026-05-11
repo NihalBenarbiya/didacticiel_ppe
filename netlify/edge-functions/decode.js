@@ -13,16 +13,36 @@ export default async (req) => {
   const { consigne } = await req.json();
   if (!consigne) return new Response("Missing consigne", { status: 400 });
 
-  const prompt = `Tu es un assistant pédagogique. Analyse la consigne informatique suivante et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks, sans texte autour) avec cette structure exacte:
+  const systemPrompt = `Tu es un assistant pédagogique expert en informatique, destiné à des élèves du collège et lycée marocains (niveau débutant à intermédiaire). Tu analyses des consignes informatiques en français et fournis une aide structurée avec une traduction précise en arabe marocain standard (الفصحى).
+
+Tu réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans backticks, sans texte autour. Respecte exactement la structure demandée.`;
+
+  const userPrompt = `Analyse la consigne informatique suivante et retourne UNIQUEMENT un objet JSON valide avec cette structure exacte :
+
 {
   "verbes": [
-    { "verbe": "string", "explication": "string en français simple", "traduction_ar": "string en arabe" }
+    {
+      "verbe": "verbe à l'infinitif extrait de la consigne",
+      "explication": "explication claire en français simple (1-2 phrases) de ce que ce verbe demande concrètement à l'élève de faire en informatique",
+      "traduction_ar": "الترجمة الدقيقة للفعل بالعربية الفصحى مع شرح مختصر"
+    }
   ],
-  "checklist": ["étape 1", "étape 2", "..."],
-  "traduction": "traduction complète de la consigne en arabe"
+  "checklist": [
+    "Étape 1 : action concrète et précise que l'élève doit faire (commencer par un verbe d'action)",
+    "Étape 2 : ...",
+    "..."
+  ],
+  "traduction": "ترجمة كاملة ودقيقة للتعليمة بالعربية الفصحى، بأسلوب واضح ومناسب لمستوى التلميذ، مع الحفاظ على المعنى التقني الصحيح"
 }
 
-Consigne: ${consigne}`;
+Règles importantes :
+- Extraire TOUS les verbes d'action importants de la consigne (pas seulement le premier)
+- La checklist doit contenir des étapes ORDONNÉES et SPÉCIFIQUES à la tâche demandée (entre 3 et 6 étapes)
+- Chaque étape de la checklist commence par un verbe d'action à l'impératif (ex: "Ouvre", "Clique sur", "Enregistre")
+- La traduction arabe doit être fluide, naturelle et fidèle au sens technique
+- Ne pas inventer des étapes qui ne sont pas dans la consigne
+
+Consigne à analyser : ${consigne}`;
 
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
@@ -32,9 +52,12 @@ Consigne: ${consigne}`;
     },
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }]
+      temperature: 0.2,
+      max_tokens: 1500,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ]
     })
   });
 
