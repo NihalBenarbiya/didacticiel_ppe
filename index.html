@@ -709,10 +709,17 @@ async function decoder() {
     const data = await response.json();
     const raw = data.choices[0].message.content.trim();
 
-    // Strip potential markdown code fences
-    const jsonStr = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```$/i, '').trim();
-    const parsed = JSON.parse(jsonStr);
-    afficherResultat(parsed);
+    // Plus besoin de Regex complexes pour enlever le markdown, 
+// mais on garde le parse pour vérifier :
+let parsed;
+try {
+  parsed = JSON.parse(raw);
+} catch (e) {
+  // Si erreur ici, c'est que l'IA a planté (rare avec le JSON mode)
+  throw new Error("Impossible de lire la réponse de l'IA");
+}
+
+afficherResultat(parsed);
 
   } catch (err) {
     document.getElementById("result").innerHTML = `<div class="error-msg">❌ Erreur : ${err.message}</div>`;
