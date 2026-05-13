@@ -260,6 +260,7 @@
       border-radius: 10px; padding: 10px 14px; font-size: 13px;
     }
     .verbe-chip strong { color: var(--accent); font-weight: 700; }
+    .verbe-chip .action { font-size: 12px; color: var(--text); margin-top: 4px; font-style: italic; }
     .verbe-chip .ar { direction: rtl; font-family: var(--font-ar); font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.9; }
 
     .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; }
@@ -272,231 +273,133 @@
       background: linear-gradient(135deg, #f8f3ff 0%, #f0e8fe 100%);
       border: 1px solid #ddd6fe; border-radius: 10px; padding: 14px 16px;
     }
+    .tip-block {
+      background: #fff9db; border: 1px solid #fab005; border-radius: 10px; padding: 14px 16px; font-size: 14px; color: #856404;
+    }
     .error-msg { background: #fff0f0; border: 1px solid #ffc0c0; border-radius: 10px; padding: 14px 18px; color: #c0392b; font-size: 14px; }
 
-    /* ── LEARN VIEW ── */
-    .learn-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-    .learn-back {
-      background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px;
-      padding: 6px 12px; font-size: 12px; font-weight: 600; color: var(--muted);
-      cursor: pointer; font-family: var(--font); transition: all .15s;
-    }
-    .learn-back:hover { border-color: var(--accent); color: var(--accent); }
+    /* ── Sidebar Nav ── */
+    .sidebar-nav { flex: 1; }
 
-    /* verbe hero card */
-    .verbe-hero {
-      border-radius: var(--radius); padding: 28px 28px 22px;
-      margin-bottom: 18px; color: #fff; position: relative; overflow: hidden;
-    }
-    .verbe-hero::before {
-      content: attr(data-emoji);
-      position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-      font-size: 72px; opacity: .18; pointer-events: none;
-    }
-    .verbe-hero .vh-verb { font-size: 30px; font-weight: 700; letter-spacing: -.01em; }
-    .verbe-hero .vh-def { font-size: 14px; opacity: .88; margin-top: 6px; max-width: 460px; line-height: 1.6; }
-    .verbe-hero .vh-ar {
-      margin-top: 12px; font-size: 20px;
-      opacity: .92; direction: rtl; display: inline-block;
-      background: rgba(255,255,255,.15); padding: 4px 12px; border-radius: 8px;
-    }
-
-    .anim-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35);
-      border-radius: 20px; padding: 4px 10px; font-size: 11px;
-      margin-top: 0; margin-bottom: 12px; font-weight: 600;
-    }
-    .anim-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: blink 1s ease infinite; }
-    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
-
-    /* example box */
-    .example-box {
-      background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
-      border: 1px solid #a7f3d0; border-radius: 12px;
-      padding: 16px 18px; margin-bottom: 16px;
-    }
-    .example-box .ex-label { font-size: 10px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing:.07em; margin-bottom: 6px; }
-    .example-box .ex-text { font-size: 14px; color: #064e3b; line-height: 1.7; }
-
-    /* exercise card */
-    .exercise-card {
-      background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: var(--radius); padding: 22px 24px;
-    }
-    .ex-title { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing:.08em; margin-bottom: 4px; }
-    .ex-question { font-size: 15px; font-weight: 600; margin-bottom: 16px; line-height: 1.5; }
-
-    /* QCM */
-    .qcm-options { display: flex; flex-direction: column; gap: 9px; }
-    .qcm-option {
-      display: flex; align-items: center; gap: 12px;
-      padding: 11px 14px; border: 1.5px solid var(--border);
-      border-radius: 10px; cursor: pointer; font-size: 14px;
-      transition: border-color .15s, background .15s; user-select: none;
-      background: var(--surface2);
-    }
-    .qcm-option:hover:not(.disabled) { border-color: var(--accent); background: var(--accent-light); }
-    .qcm-option.selected { border-color: var(--accent); background: var(--accent-light); }
-    .qcm-option.correct  { border-color: #059669; background: #d1fae5; color: #064e3b; }
-    .qcm-option.wrong    { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; text-decoration: line-through; }
-    .qcm-option.disabled { cursor: default; }
-    .qcm-option .opt-cb  { width:16px;height:16px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all.15s; }
-    .qcm-option.selected .opt-cb,
-    .qcm-option.correct  .opt-cb { border-color: var(--accent); background: var(--accent); }
-    .qcm-option.correct  .opt-cb { border-color:#059669;background:#059669; }
-    .qcm-option.wrong    .opt-cb { border-color:#dc2626;background:#dc2626; }
-    .opt-check { color:#fff;font-size:10px; }
-
-    /* verbe list overview */
-    .verbe-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 16px; }
-    .verbe-list-card {
-      background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: var(--radius); padding: 18px 16px; cursor: pointer;
-      transition: transform .15s, box-shadow .15s, border-color .15s;
-    }
-    .verbe-list-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(59,111,240,.13); border-color: var(--accent); }
-    .vlc-emoji { font-size: 26px; margin-bottom: 8px; }
-    .vlc-verb  { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-    .vlc-def   { font-size: 12px; color: var(--muted); line-height: 1.5; }
-    .vlc-ar    { font-size: 15px; margin-top: 6px; direction: rtl; color: var(--accent2); }
-
-    /* progress bar */
-    .progress-wrap { margin-bottom: 24px; }
-    .progress-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-    .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #6b9aff); border-radius: 3px; transition: width .5s ease; }
   </style>
 </head>
 <body>
 
-<!-- Mobile hamburger -->
-<button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Menu">
-  <span></span><span></span><span></span>
-</button>
-
-<!-- ═══ TOP NAVBAR ═══════════════════════════════════════════ -->
-<header class="topbar">
-  <!-- nav.js injects <nav> here automatically -->
-</header>
-
-<!-- ═══ SIDEBAR (LEFT) ═══════════════════════════════════════════ -->
-<nav class="sidebar">
-  <div class="nav-section">Outils</div>
-  <button class="nav-item active" id="nav-decoder" onclick="showView('decoder')">
-    <span class="ni-icon">🔍</span>
-    <span class="ni-label">Décodeur</span>
-  </button>
-
-  <div class="nav-section">Apprentissage</div>
-  <button class="nav-item" id="nav-learn" onclick="toggleLearnMenu()">
-    <span class="ni-icon">📖</span>
-    <span class="ni-label">Apprendre les verbes</span>
-  </button>
-  <div class="nav-verbes" id="nav-verbes">
-    <!-- populated by JS -->
+  <div class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+    <span></span><span></span><span></span>
   </div>
-</nav>
 
-<!-- ═══ MAIN CONTENT ══════════════════════════════════════════════ -->
-<main class="main-wrap">
+  <div class="topbar">
+    <!-- nav.js will inject links here -->
+  </div>
 
-  <!-- ── VIEW : Décodeur ─────────────────────────────── -->
-  <div class="view active" id="view-decoder">
-    <div class="page-header">
-      <h1>🔍 Décodeur de consignes</h1>
-      <p class="subtitle">Analyse une consigne d'informatique : verbes d'action, étapes à suivre et traduction en arabe.</p>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div style="font-size: 18px; font-weight: 800; color: var(--accent)">Informatique <span>Collège</span></div>
+    </div>
+    
+    <div class="sidebar-nav">
+      <div class="nav-section">Outils</div>
+      <button class="nav-item active" id="nav-decoder" onclick="showView('decoder')">
+        <span class="ni-icon">🔍</span><span class="ni-label">Décodeur</span>
+      </button>
+
+      <div class="nav-section">Apprentissage</div>
+      <button class="nav-item" id="nav-learn" onclick="toggleLearnMenu()">
+        <span class="ni-icon">📖</span><span class="ni-label">Les Verbes</span>
+      </button>
+      <div class="nav-verbes" id="nav-verbes">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-wrap">
+    
+    <!-- VIEW: DECODER -->
+    <div id="view-decoder" class="view active">
+      <div class="page-header">
+        <h1>Décodeur de consignes</h1>
+        <p class="subtitle">Colle ta consigne informatique ci-dessous pour comprendre ce qu'il faut faire étape par étape.</p>
+      </div>
+
+      <div class="card">
+        <label class="lbl">Consigne à analyser</label>
+        <textarea id="consigne" rows="4" placeholder="Ex: Saisir le texte et mettre le titre en gras et en rouge..."></textarea>
+        
+        <div class="btn-row">
+          <button id="btn" class="primary" onclick="decoder()">
+            <span>🚀</span> Analyser la consigne
+          </button>
+          <div id="loading" class="loading">
+            <div class="spinner"></div> Analyse en cours...
+          </div>
+        </div>
+      </div>
+
+      <div id="result"></div>
     </div>
 
-    <div class="card">
-      <label class="lbl" for="consigne">Consigne à analyser</label>
-      <textarea id="consigne" rows="4" placeholder="Ex : Identifie et classe les différents types de fichiers présents dans le dossier…"></textarea>
-      <div class="btn-row">
-        <button class="primary" onclick="decoder()" id="btn">🚀 Décoder la consigne</button>
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
-          Analyse en cours…
+    <!-- VIEW: LEARN LIST -->
+    <div id="view-learn-list" class="view">
+      <h1>Dictionnaire des verbes</h1>
+      <p class="subtitle">Apprends la signification des verbes d'action utilisés en informatique.</p>
+      <div id="verbe-list-grid" class="verbe-list-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- VIEW: VERBE DETAIL -->
+    <div id="view-verbe-detail" class="view">
+      <div id="vd-breadcrumb" style="font-size: 12px; color: var(--muted); margin-bottom: 12px;"></div>
+      <div id="vd-hero" class="card" style="color: #fff; padding: 32px; position: relative; overflow: hidden;">
+        <!-- Injected via JS -->
+      </div>
+      
+      <div class="section">
+        <div class="section-header"><h2>Exemple</h2></div>
+        <p id="vd-exemple" style="font-style: italic; color: var(--muted);"></p>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><h2>Petit Test</h2></div>
+        <p id="vd-ex-question" style="font-weight: 600; margin-bottom: 16px;"></p>
+        <div id="vd-ex-body"></div>
+        <div id="vd-feedback" style="display: none;"></div>
+        <div class="btn-row">
+          <button id="vd-check-btn" class="primary" onclick="checkExercise()">Vérifier</button>
+          <button id="vd-retry-btn" class="primary" style="display: none; background: var(--muted);" onclick="retryExercise()">Réessayer</button>
         </div>
       </div>
     </div>
 
-    <div id="result"></div>
-  </div>
+  </main>
 
-  <!-- ── VIEW : Liste des verbes ─────────────────────── -->
-  <div class="view" id="view-learn-list">
-    <div class="page-header">
-      <h1>📖 Apprendre les verbes</h1>
-      <p class="subtitle">Clique sur un verbe pour voir sa définition, un exemple et un exercice interactif.</p>
-    </div>
-    <div class="verbe-list-grid" id="verbe-list-grid">
-      <!-- populated by JS -->
-    </div>
-  </div>
-
-  <!-- ── VIEW : Détail d'un verbe ────────────────────── -->
-  <div class="view" id="view-verbe-detail">
-    <div class="learn-header">
-      <button class="learn-back" onclick="showView('learn-list')">← Retour</button>
-      <div id="vd-breadcrumb" style="font-size:13px;color:var(--muted)"></div>
-    </div>
-
-    <!-- hero -->
-    <div class="verbe-hero card" id="vd-hero"></div>
-
-    <!-- progress -->
-    <div class="progress-wrap">
-      <div class="progress-label" id="vd-progress-label"></div>
-      <div class="progress-bar"><div class="progress-fill" id="vd-progress-fill"></div></div>
-    </div>
-
-    <!-- example -->
-    <div class="example-box">
-      <div class="ex-label">Exemple de consigne</div>
-      <div class="ex-text" id="vd-exemple"></div>
-    </div>
-
-    <!-- exercise -->
-    <div class="exercise-card">
-      <div class="ex-title">Exercice interactif</div>
-      <div class="ex-question" id="vd-ex-question"></div>
-      <div id="vd-ex-body"></div>
-      <div class="feedback-row">
-        <button class="primary" id="vd-check-btn" onclick="checkExercise()">Vérifier</button>
-        <button class="btn-row" id="vd-retry-btn" onclick="retryExercise()" style="display:none; background:none; border:1px solid var(--border); color:var(--text);">Réessayer</button>
-        <div class="feedback-msg" id="vd-feedback"></div>
-      </div>
-      <div class="explication-box" id="vd-explication"></div>
-    </div>
-  </div>
-
-</main>
-
-<script>
-/* ── Data ─────────────────────────────────────────────── */
+  <script>
+/* ── Données des verbes ──────────────────────────────── */
 window.VERBES_DATA = [
   {
-    id: 'identifier', verbe: 'Identifier', emoji: '🔍', couleur: '#3b82f6',
-    definition: 'Reconnaître et nommer un élément, une caractéristique ou un problème.',
-    traduction: 'تحديد',
-    exemple: 'Identifie les composants de l\'ordinateur sur le schéma.',
+    id: 'saisir', verbe: 'Saisir', emoji: '⌨️', couleur: '#3b82f6',
+    definition: 'Écrire du texte ou des nombres à l\'aide du clavier.',
+    traduction: 'كتابة / إدخال',
+    exemple: 'Saisis ton nom et ton prénom dans le formulaire.',
     exercice: {
-      type: 'qcm', question: 'Que signifie "Identifier" dans une consigne ?',
+      type: 'qcm', question: 'Quel outil utilises-tu pour "Saisir" ?',
       choix: [
-        { texte: 'Créer un nouvel objet', correct: false },
-        { texte: 'Reconnaître et nommer un élément existant', correct: true },
-        { texte: 'Effacer une erreur', correct: false }
+        { texte: 'La souris', correct: false },
+        { texte: 'Le clavier', correct: true },
+        { texte: 'L\'imprimante', correct: false }
       ],
-      explication: 'Identifier implique de repérer quelque chose qui existe déjà.'
+      explication: 'Saisir signifie entrer des données via le clavier.'
     }
   },
   {
-    id: 'classer', verbe: 'Classer', emoji: '🗂️', couleur: '#10b981',
-    definition: 'Mettre en ordre des objets ou des informations selon des critères précis.',
+    id: 'classer', verbe: 'Classer', emoji: '📁', couleur: '#10b981',
+    definition: 'Ranger des fichiers ou des dossiers dans un ordre précis.',
     traduction: 'تصنيف',
-    exemple: 'Classe les fichiers par date de modification.',
+    exemple: 'Classe ces fichiers par ordre alphabétique.',
     exercice: {
-      type: 'qcm', question: 'Quelle action correspond à "Classer" ?',
+      type: 'qcm', question: 'Classer des fichiers permet de :',
       choix: [
         { texte: 'Mettre en ordre selon des critères', correct: true },
         { texte: 'Supprimer les documents inutiles', correct: false },
@@ -546,6 +449,7 @@ function toggleLearnMenu() {
 function buildVerbeNav() {
   const container = document.getElementById('nav-verbes');
   const grid = document.getElementById('verbe-list-grid');
+  if (!container || !grid) return;
   container.innerHTML = '';
   grid.innerHTML = '';
 
@@ -560,12 +464,13 @@ function buildVerbeNav() {
 
     // Main Grid Item
     const card = document.createElement('div');
-    card.className = 'verbe-list-card';
+    card.className = 'card';
+    card.style.cursor = 'pointer';
     card.innerHTML = `
-      <div class="vlc-emoji">${v.emoji}</div>
-      <div class="vlc-verb">${v.verbe}</div>
-      <div class="vlc-def">${v.definition}</div>
-      <div class="vlc-ar">${v.traduction}</div>`;
+      <div style="font-size: 24px; margin-bottom: 8px;">${v.emoji}</div>
+      <div style="font-weight: 700; color: var(--accent);">${v.verbe}</div>
+      <div style="font-size: 12px; color: var(--muted); margin: 4px 0;">${v.definition}</div>
+      <div style="direction: rtl; font-family: var(--font-ar); color: var(--muted);">${v.traduction}</div>`;
     card.onclick = () => openVerbe(v.id);
     grid.appendChild(card);
   });
@@ -582,13 +487,12 @@ function openVerbe(id) {
   document.getElementById('vd-breadcrumb').textContent = `Verbes › ${v.verbe}`;
 
   const hero = document.getElementById('vd-hero');
-  hero.setAttribute('data-emoji', v.emoji);
   hero.style.background = `linear-gradient(135deg, ${v.couleur}dd, ${v.couleur}99)`;
   hero.innerHTML = `
-    <div class="anim-badge"><div class="anim-dot"></div> Découverte</div>
-    <div class="vh-verb">${v.emoji} ${v.verbe}</div>
-    <div class="vh-def">${v.definition}</div>
-    <div class="vh-ar">${v.traduction}</div>`;
+    <div style="font-size: 12px; opacity: 0.8; margin-bottom: 8px;">Découverte</div>
+    <div style="font-size: 28px; font-weight: 800;">${v.emoji} ${v.verbe}</div>
+    <div style="font-size: 16px; margin-top: 8px;">${v.definition}</div>
+    <div style="direction: rtl; font-family: var(--font-ar); font-size: 20px; margin-top: 12px;">${v.traduction}</div>`;
 
   document.getElementById('vd-exemple').textContent = v.exemple;
   document.getElementById('vd-ex-question').textContent = v.exercice.question;
@@ -614,14 +518,25 @@ function renderExercise(ex) {
 
   if (ex.type === 'qcm') {
     const wrap = document.createElement('div');
-    wrap.className = 'qcm-options';
+    wrap.style.display = 'flex';
+    wrap.style.flexDirection = 'column';
+    wrap.style.gap = '8px';
     ex.choix.forEach((c, i) => {
       const opt = document.createElement('div');
-      opt.className = 'qcm-option';
+      opt.style.padding = '12px';
+      opt.style.border = '1.5px solid var(--border)';
+      opt.style.borderRadius = '8px';
+      opt.style.cursor = 'pointer';
       opt.dataset.index = i;
-      opt.innerHTML = `<div class="opt-cb"><span class="opt-check">✓</span></div><span>${c.texte}</span>`;
+      opt.innerHTML = `<span>${c.texte}</span>`;
       opt.onclick = () => {
-        wrap.querySelectorAll('.qcm-option').forEach(o => o.classList.remove('selected'));
+        wrap.querySelectorAll('div').forEach(o => {
+            o.style.background = '';
+            o.style.borderColor = 'var(--border)';
+            o.classList.remove('selected');
+        });
+        opt.style.background = 'var(--accent-light)';
+        opt.style.borderColor = 'var(--accent)';
         opt.classList.add('selected');
       };
       wrap.appendChild(opt);
@@ -635,19 +550,10 @@ function checkExercise() {
   const ex = v.exercice;
   let correct = false;
 
-  if (ex.type === 'qcm') {
-    const selected = document.querySelector('.qcm-option.selected');
-    if (!selected) return alert("Choisis une réponse !");
-    const idx = +selected.dataset.index;
-    correct = ex.choix[idx].correct;
-
-    document.querySelectorAll('.qcm-option').forEach(o => {
-      o.classList.add('disabled');
-      const i = +o.dataset.index;
-      if (ex.choix[i].correct) o.classList.add('correct');
-      else if (o.classList.contains('selected')) o.classList.add('wrong');
-    });
-  }
+  const selected = document.querySelector('.view.active .selected');
+  if (!selected) return alert("Choisis une réponse !");
+  const idx = +selected.dataset.index;
+  correct = ex.choix[idx].correct;
 
   showFeedback(correct, ex.explication);
   document.getElementById('vd-check-btn').style.display = 'none';
@@ -657,18 +563,19 @@ function checkExercise() {
 function showFeedback(correct, explication) {
   const fb = document.getElementById('vd-feedback');
   fb.style.display = 'block';
-  fb.style.padding = '10px';
+  fb.style.padding = '12px';
   fb.style.borderRadius = '8px';
-  fb.style.marginTop = '10px';
+  fb.style.marginTop = '12px';
+  fb.style.fontSize = '14px';
   
   if(correct) {
     fb.style.background = '#d1fae5';
     fb.style.color = '#065f46';
-    fb.textContent = '✅ Bravo ! Bonne réponse.';
+    fb.innerHTML = `<strong>✅ Bravo !</strong><br>${explication}`;
   } else {
     fb.style.background = '#fee2e2';
     fb.style.color = '#991b1b';
-    fb.textContent = '❌ Pas tout à fait.'; 
+    fb.innerHTML = `<strong>❌ Pas tout à fait.</strong><br>${explication}`; 
   }
 }
 
@@ -707,19 +614,18 @@ async function decoder() {
     }
 
     const data = await response.json();
-    const raw = data.choices[0].message.content.trim();
+    
+    // Groq returns choices[0].message.content which is a string (JSON)
+    let parsed;
+    try {
+      const raw = data.choices[0].message.content.trim();
+      parsed = JSON.parse(raw);
+    } catch (e) {
+      console.error("Parsing error:", e);
+      throw new Error("Impossible de lire la réponse de l'IA");
+    }
 
-    // Plus besoin de Regex complexes pour enlever le markdown, 
-// mais on garde le parse pour vérifier :
-let parsed;
-try {
-  parsed = JSON.parse(raw);
-} catch (e) {
-  // Si erreur ici, c'est que l'IA a planté (rare avec le JSON mode)
-  throw new Error("Impossible de lire la réponse de l'IA");
-}
-
-afficherResultat(parsed);
+    afficherResultat(parsed);
 
   } catch (err) {
     document.getElementById("result").innerHTML = `<div class="error-msg">❌ Erreur : ${err.message}</div>`;
@@ -730,17 +636,35 @@ afficherResultat(parsed);
 }
 
 function afficherResultat(data) {
-  const verbesHTML = data.verbes.map(v => `
+  // Ensure properties exist before mapping to avoid "undefined" errors
+  const verbesList = data.verbes_cles || data.verbes || [];
+  const stepsList = data.etapes_detaillees || data.checklist || [];
+  const tradAr = data.traduction_complete_ar || data.traduction || "";
+  const tip = data.astuce_du_prof || "";
+  const objectif = data.analyse?.objectif || "";
+
+  const verbesHTML = verbesList.map(v => `
     <div class="verbe-chip">
-      <strong>${v.verbe}</strong> — ${v.explication}
+      <strong>${v.verbe}</strong>
+      <div class="action">${v.action_concrete || v.explication || ""}</div>
       <div class="ar">${v.traduction_ar}</div>
     </div>`).join("");
     
-  const stepsHTML = data.checklist.map((e, i) =>
+  const stepsHTML = stepsList.map((e, i) =>
     `<li><input type="checkbox" id="step${i}"><label for="step${i}">${e}</label></li>`
   ).join("");
   
-  document.getElementById("result").innerHTML = `
+  let resultHTML = "";
+  
+  if (objectif) {
+    resultHTML += `
+    <div class="section" style="animation-delay:.02s">
+      <div class="section-header"><div class="section-icon" style="background:#e0f2fe">🎯</div><h2>Objectif</h2></div>
+      <p style="font-size: 14px; line-height: 1.6;">${objectif}</p>
+    </div>`;
+  }
+
+  resultHTML += `
     <div class="section" style="animation-delay:.05s">
       <div class="section-header"><div class="section-icon" style="background:#fef3c7">🔑</div><h2>Verbes d'action</h2></div>
       <div class="verbes-grid">${verbesHTML}</div>
@@ -751,8 +675,18 @@ function afficherResultat(data) {
     </div>
     <div class="section" style="animation-delay:.19s">
       <div class="section-header"><div class="section-icon" style="background:#ede9fe">🌐</div><h2>Traduction en arabe</h2></div>
-      <p class="arabic-block">${data.traduction}</p>
+      <p class="arabic-block">${tradAr}</p>
     </div>`;
+
+  if (tip) {
+    resultHTML += `
+    <div class="section" style="animation-delay:.25s">
+      <div class="section-header"><div class="section-icon" style="background:#fff9db">💡</div><h2>Astuce du Prof</h2></div>
+      <div class="tip-block">${tip}</div>
+    </div>`;
+  }
+
+  document.getElementById("result").innerHTML = resultHTML;
 }
 
 /* ── Init ─────────────────────────────────────────────── */
@@ -761,11 +695,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- ── nav.js integration: set active page then load the script ── -->
+<!-- ── nav.js integration ── -->
 <script>window.NAV_ACTIVE = "index";</script>
 <script src="nav.js"></script>
 
-<!-- ── Move injected <nav> into the topbar after nav.js runs ── -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const injectedNav = document.body.querySelector('nav:not(.sidebar)');
