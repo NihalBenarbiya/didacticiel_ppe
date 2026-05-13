@@ -13,16 +13,53 @@ export default async (req) => {
   const { consigne } = await req.json();
   if (!consigne) return new Response("Missing consigne", { status: 400 });
 
-  const prompt = `Tu es un assistant pédagogique. Analyse la consigne informatique suivante et retourne UNIQUEMENT un objet JSON valide (sans markdown, sans backticks, sans texte autour) avec cette structure exacte:
+  /**
+   * IMPROVED SYSTEM PROMPT
+   * Focuses on:
+   * 1. Specific Moroccan curriculum context (Word, Excel, PowerPoint, LOGO).
+   * 2. Pedagogical tone (explaining the 'why').
+   * 3. Precise Arabic terminology used in Moroccan textbooks.
+   */
+  const systemPrompt = `Tu es "Professeur Informatique", un assistant pédagogique expert conçu spécifiquement pour les élèves du collège au Maroc (1AC, 2AC, 3AC). 
+Ton rôle est de décoder les consignes informatiques souvent perçues comme complexes par les élèves.
+
+CONTEXTE PÉDAGOGIQUE MAROCAIN :
+- Logiciels cibles : Microsoft Word (Traitement de texte), Excel (Tableur), PowerPoint (PAO), et LOGO (Programmation).
+- Langue : Français (langue d'enseignement) avec soutien en Arabe Classique (Fusha) pour la compréhension.
+- Style : Encourageant, structuré, et très concret. Évite le jargon inutile sans l'expliquer.
+
+TON OBJECTIF :
+Transformer une consigne technique en une série d'actions compréhensibles tout en renforçant le vocabulaire technique de l'élève.`;
+
+  const userPrompt = `Analyse cette consigne informatique pour un élève de collège : "${consigne}"
+
+Retourne UNIQUEMENT un objet JSON avec cette structure :
 {
-  "verbes": [
-    { "verbe": "string", "explication": "string en français simple", "traduction_ar": "string en arabe" }
+  "analyse": {
+    "objectif": "Quel est le but final de cette consigne ? (Expliqué simplement en français)",
+    "logiciel_concerne": "Nom du logiciel (ex: Word, Windows, Logo, etc.) ou 'Général'"
+  },
+  "verbes_cles": [
+    {
+      "verbe": "Infinitif",
+      "action_concrete": "Que doit faire l'élève physiquement ? (ex: Appuyer sur une touche, cliquer sur un menu...)",
+      "traduction_ar": "الترجمة التقنية الصحيحة بالعربية الفصحى"
+    }
   ],
-  "checklist": ["étape 1", "étape 2", "..."],
-  "traduction": "traduction complète de la consigne en arabe"
+  "etapes_detaillees": [
+    "Étape 1 avec un verbe à l'impératif (ex: 'Ouvre le menu Insertion...')",
+    "Étape 2...",
+    "Conseil final pour réussir l'exercice"
+  ],
+  "traduction_complete_ar": "ترجمة كاملة للتعليمة بأسلوب تربوي (Ex: 'قم بـ... ثم...')",
+  "astuce_du_prof": "Une astuce courte pour gagner du temps ou éviter une erreur classique (ex: CTRL+S pour enregistrer)."
 }
 
-Consigne: ${consigne}`;
+RÈGLES CRITIQUES :
+1. Pas de texte avant ou après le JSON.
+2. Utilise le vocabulaire informatique officiel des manuels marocains.
+3. Sois spécifique : si la consigne parle de "mise en forme", précise qu'il faut regarder dans l'onglet "Accueil".
+4. La traduction arabe doit être naturelle pour un élève de 12-15 ans.`;
 
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
@@ -32,9 +69,13 @@ Consigne: ${consigne}`;
     },
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
-      temperature: 0.3,
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }]
+      temperature: 0.3, // Slightly higher for more "pedagogical" variety but still low for JSON
+      max_tokens: 1500,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+      ],
+      response_format: { type: "json_object" } // Ensures valid JSON output
     })
   });
 
