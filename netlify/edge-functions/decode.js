@@ -13,36 +13,53 @@ export default async (req) => {
   const { consigne } = await req.json();
   if (!consigne) return new Response("Missing consigne", { status: 400 });
 
-  const systemPrompt = `Tu es un assistant pédagogique expert en informatique, destiné à des élèves du collège et lycée marocains (niveau débutant à intermédiaire). Tu analyses des consignes informatiques en français et fournis une aide structurée avec une traduction précise en arabe marocain standard (الفصحى).
+  /**
+   * IMPROVED SYSTEM PROMPT
+   * Focuses on:
+   * 1. Specific Moroccan curriculum context (Word, Excel, PowerPoint, LOGO).
+   * 2. Pedagogical tone (explaining the 'why').
+   * 3. Precise Arabic terminology used in Moroccan textbooks.
+   */
+  const systemPrompt = `Tu es "Professeur Informatique", un assistant pédagogique expert conçu spécifiquement pour les élèves du collège au Maroc (1AC, 2AC, 3AC). 
+Ton rôle est de décoder les consignes informatiques souvent perçues comme complexes par les élèves.
 
-Tu réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans backticks, sans texte autour. Respecte exactement la structure demandée.`;
+CONTEXTE PÉDAGOGIQUE MAROCAIN :
+- Logiciels cibles : Microsoft Word (Traitement de texte), Excel (Tableur), PowerPoint (PAO), et LOGO (Programmation).
+- Langue : Français (langue d'enseignement) avec soutien en Arabe Classique (Fusha) pour la compréhension.
+- Style : Encourageant, structuré, et très concret. Évite le jargon inutile sans l'expliquer.
 
-  const userPrompt = `Analyse la consigne informatique suivante et retourne UNIQUEMENT un objet JSON valide avec cette structure exacte :
+TON OBJECTIF :
+Transformer une consigne technique en une série d'actions compréhensibles tout en renforçant le vocabulaire technique de l'élève.`;
 
+  const userPrompt = `Analyse cette consigne informatique pour un élève de collège : "${consigne}"
+
+Retourne UNIQUEMENT un objet JSON avec cette structure :
 {
-  "verbes": [
+  "analyse": {
+    "objectif": "Quel est le but final de cette consigne ? (Expliqué simplement en français)",
+    "logiciel_concerne": "Nom du logiciel (ex: Word, Windows, Logo, etc.) ou 'Général'"
+  },
+  "verbes_cles": [
     {
-      "verbe": "verbe à l'infinitif extrait de la consigne",
-      "explication": "explication claire en français simple (1-2 phrases) de ce que ce verbe demande concrètement à l'élève de faire en informatique",
-      "traduction_ar": "الترجمة الدقيقة للفعل بالعربية الفصحى مع شرح مختصر"
+      "verbe": "Infinitif",
+      "action_concrete": "Que doit faire l'élève physiquement ? (ex: Appuyer sur une touche, cliquer sur un menu...)",
+      "traduction_ar": "الترجمة التقنية الصحيحة بالعربية الفصحى"
     }
   ],
-  "checklist": [
-    "Étape 1 : action concrète et précise que l'élève doit faire (commencer par un verbe d'action)",
-    "Étape 2 : ...",
-    "..."
+  "etapes_detaillees": [
+    "Étape 1 avec un verbe à l'impératif (ex: 'Ouvre le menu Insertion...')",
+    "Étape 2...",
+    "Conseil final pour réussir l'exercice"
   ],
-  "traduction": "ترجمة كاملة ودقيقة للتعليمة بالعربية الفصحى، بأسلوب واضح ومناسب لمستوى التلميذ، مع الحفاظ على المعنى التقني الصحيح"
+  "traduction_complete_ar": "ترجمة كاملة للتعليمة بأسلوب تربوي (Ex: 'قم بـ... ثم...')",
+  "astuce_du_prof": "Une astuce courte pour gagner du temps ou éviter une erreur classique (ex: CTRL+S pour enregistrer)."
 }
 
-Règles importantes :
-- Extraire TOUS les verbes d'action importants de la consigne (pas seulement le premier)
-- La checklist doit contenir des étapes ORDONNÉES et SPÉCIFIQUES à la tâche demandée (entre 3 et 6 étapes)
-- Chaque étape de la checklist commence par un verbe d'action à l'impératif (ex: "Ouvre", "Clique sur", "Enregistre")
-- La traduction arabe doit être fluide, naturelle et fidèle au sens technique
-- Ne pas inventer des étapes qui ne sont pas dans la consigne
-
-Consigne à analyser : ${consigne}`;
+RÈGLES CRITIQUES :
+1. Pas de texte avant ou après le JSON.
+2. Utilise le vocabulaire informatique officiel des manuels marocains.
+3. Sois spécifique : si la consigne parle de "mise en forme", précise qu'il faut regarder dans l'onglet "Accueil".
+4. La traduction arabe doit être naturelle pour un élève de 12-15 ans.`;
 
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
@@ -52,12 +69,13 @@ Consigne à analyser : ${consigne}`;
     },
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
-      temperature: 0.2,
+      temperature: 0.3, // Slightly higher for more "pedagogical" variety but still low for JSON
       max_tokens: 1500,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
-      ]
+      ],
+      response_format: { type: "json_object" } // Ensures valid JSON output
     })
   });
 
