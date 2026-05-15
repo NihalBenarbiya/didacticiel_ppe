@@ -45,11 +45,6 @@
     return `<footer>Didacticiel · Informatique Collège · Maroc</footer>`;
   }
 
-  /**
-   * On pages that already have a .sidebar (index.html), inject page links at
-   * the top of it — visible on mobile only.
-   * On other pages, create a minimal mobile-only sidebar + hamburger.
-   */
   function injectMobileNav() {
     const active = currentKey();
     const existingSidebar = document.querySelector('.sidebar');
@@ -184,6 +179,15 @@
       overlay.addEventListener('click', close);
     }
   }
+
+  /* Inject global style: hide top nav links on mobile across all pages */
+  const globalStyle = document.createElement('style');
+  globalStyle.textContent = `
+    @media (max-width: 768px) {
+      nav:not(.sidebar) .nav-links { display: none !important; }
+    }
+  `;
+  document.head.appendChild(globalStyle);
 
   /* ── Boot ─────────────────────────────────────────── */
   document.body.insertAdjacentHTML("afterbegin", buildNav());
