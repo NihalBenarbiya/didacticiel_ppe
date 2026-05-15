@@ -12,7 +12,7 @@
     { href: "index.html",     icon: "🔍", label: "Décodeur",  key: "index"     },
     { href: "glossaire.html", icon: "📖", label: "Glossaire", key: "glossaire" },
     { href: "activity.html",  icon: "🎮", label: "Activités", key: "activity"  },
-    { href: "quiz.html",      icon: "❓",   label: "Quiz",      key: "quiz"      },
+    { href: "quiz.html",      icon: "❓",  label: "Quiz",      key: "quiz"      },
   ];
 
   /** Detect current page from URL or NAV_ACTIVE override */
@@ -45,6 +45,43 @@
     return `<footer>Didacticiel · Informatique Collège · Maroc</footer>`;
   }
 
+  /** Inject page links into sidebar for mobile (under a "Pages" section) */
+  function buildSidebarLinks() {
+    const active = currentKey();
+    const sidebarNav = document.querySelector('.sidebar-nav');
+    if (!sidebarNav) return;
+
+    const section = document.createElement('div');
+    section.className = 'nav-section nav-pages-section';
+    section.textContent = 'Pages';
+    section.style.cssText = 'display: none;';
+
+    const linksWrap = document.createElement('div');
+    linksWrap.className = 'nav-pages-links';
+    linksWrap.style.cssText = 'display: none;';
+
+    LINKS.forEach(l => {
+      const btn = document.createElement('a');
+      btn.href = l.href;
+      btn.className = 'nav-item' + (active === l.key ? ' active' : '');
+      btn.innerHTML = `<span class="ni-icon">${l.icon}</span><span class="ni-label">${l.label}</span>`;
+      linksWrap.appendChild(btn);
+    });
+
+    sidebarNav.insertBefore(linksWrap, sidebarNav.firstChild);
+    sidebarNav.insertBefore(section, sidebarNav.firstChild);
+
+    // Show only on mobile
+    function toggleMobileLinks() {
+      const isMobile = window.innerWidth <= 768;
+      section.style.display = isMobile ? '' : 'none';
+      linksWrap.style.display = isMobile ? '' : 'none';
+    }
+
+    toggleMobileLinks();
+    window.addEventListener('resize', toggleMobileLinks);
+  }
+
   /* Insert nav as first child of body */
   document.body.insertAdjacentHTML("afterbegin", buildNav());
 
@@ -54,5 +91,12 @@
     main.insertAdjacentHTML("afterend", buildFooter());
   } else {
     document.body.insertAdjacentHTML("beforeend", buildFooter());
+  }
+
+  /* Inject sidebar page links after DOM is ready */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildSidebarLinks);
+  } else {
+    buildSidebarLinks();
   }
 })();
