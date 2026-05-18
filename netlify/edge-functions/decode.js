@@ -56,7 +56,7 @@ Retourne UNIQUEMENT un objet JSON avec cette structure :
     "Conseil final pour réussir l'exercice"
   ],
   "traduction_complete_ar": "ترجمة كاملة للتعليمة بأسلوب تربوي (Ex: 'قم بـ... ثم...')",
- 
+  "astuce_du_prof": "Une astuce courte pour gagner du temps ou éviter une erreur classique (ex: CTRL+S pour enregistrer)."
 }
 
 RÈGLES CRITIQUES :
