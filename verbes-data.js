@@ -1,28 +1,5 @@
-/**
- * ============================================================
- *  FICHIER DE DONNÉES — VERBES DES CONSIGNES
- *  Modifiable par l'enseignant(e) sans toucher au code HTML.
- *
- *  Structure de chaque verbe :
- *  {
- *    id        : identifiant unique (string, pas d'espaces)
- *    verbe     : le mot tel qu'il apparaît dans les consignes
- *    emoji     : icône associée
- *    couleur   : couleur principale (hex ou css)
- *    definition: courte définition en français
- *    traduction: traduction en arabe
- *    exemple   : exemple de phrase de consigne utilisant ce verbe
- *    exercice  : {
- *      type      : "qcm" | "relier" | "cloze" | "trier"
- *      question  : énoncé de l'exercice
- *      ...       : champs spécifiques au type (voir exemples)
- *    }
- *  }
- * ============================================================
- */
-
 window.VERBES_DATA = [
-  {
+{
     id: "completer",
     verbe: "Compléter",
     emoji: "✏️",
@@ -152,5 +129,299 @@ window.VERBES_DATA = [
       // Message affiché après correction
       explication: "Un SSD est beaucoup plus rapide qu'un HDD ou une clé USB standard car il n'a pas de pièces mécaniques."
     }
+  },
+  {
+      "id": "definir",
+      "verbe": "Définir",
+      "emoji": "📘",
+      "couleur": "#1E90FF",
+      "definition": "Donner la signification précise d'un terme ou concept.",
+      "traduction": "حدد",
+      "exemple": "Définis ce qu'est un système d'exploitation.",
+      "exercice": {
+          "type": "qcm",
+          "question": "Que signifie 'définir' dans une consigne informatique ?",
+          "choix": [
+              {
+                  "texte": "Expliquer un concept",
+                  "correct": false
+              },
+              {
+                  "texte": "Donner la signification précise d'un terme",
+                  "correct": true
+              },
+              {
+                  "texte": "Lister des éléments",
+                  "correct": false
+              },
+              {
+                  "texte": "Calculer une valeur",
+                  "correct": false
+              }
+          ],
+          "multiple": false
+      }
+  },
+  {
+      "id": "citer",
+      "verbe": "Citer",
+      "emoji": "📝",
+      "couleur": "#32CD32",
+      "definition": "Nommer un ou plusieurs exemples ou éléments.",
+      "traduction": "اذكر",
+      "exemple": "Cite trois périphériques d'entrée d'un ordinateur.",
+      "exercice": {
+          "type": "cloze",
+          "question": "Complétez la phrase en citant un périphérique d'entrée : Un périphérique d'entrée est un appareil comme le ____.",
+          "phrase": "Un périphérique d'entrée est un appareil comme le ____.",
+          "trous": [
+              "clavier"
+          ],
+          "choix": [
+              "clavier",
+              "écran",
+              "imprimante",
+              "souris"
+          ]
+      }
+  },
+  {
+      "id": "nommer",
+      "verbe": "Nommer",
+      "emoji": "🔤",
+      "couleur": "#FF8C00",
+      "definition": "Donner le nom précis d'une chose ou d'une partie.",
+      "traduction": "سمِّ",
+      "exemple": "Nomme les différentes parties d'une unité centrale.",
+      "exercice": {
+          "type": "relier",
+          "question": "Reliez le nom de la partie de l'ordinateur à sa description.",
+          "gauche": [
+              "Écran",
+              "Clavier",
+              "Souris",
+              "Unité centrale"
+          ],
+          "droite": [
+              "Affiche les images",
+              "Permet la saisie de texte",
+              "Permet de pointer et cliquer",
+              "Contient le processeur et la mémoire"
+          ],
+          "paires": [
+              [
+                  0,
+                  0
+              ],
+              [
+                  1,
+                  1
+              ],
+              [
+                  2,
+                  2
+              ],
+              [
+                  3,
+                  3
+              ]
+          ]
+      }
+  },
+  {
+      "id": "calculer",
+      "verbe": "Calculer",
+      "emoji": "➗",
+      "couleur": "#FF4500",
+      "definition": "Effectuer une opération mathématique pour obtenir un résultat.",
+      "traduction": "احسب",
+      "exemple": "Calcule le nombre total de fichiers dans ce dossier.",
+      "exercice": {
+          "type": "qcm",
+          "question": "Quel est le résultat du calcul suivant : 8 + 12 ?",
+          "choix": [
+              {
+                  "texte": "20",
+                  "correct": true
+              },
+              {
+                  "texte": "18",
+                  "correct": false
+              },
+              {
+                  "texte": "21",
+                  "correct": false
+              },
+              {
+                  "texte": "15",
+                  "correct": false
+              }
+          ],
+          "multiple": false
+      }
+  },
+  {
+      "id": "convertir",
+      "verbe": "Convertir",
+      "emoji": "🔄",
+      "couleur": "#9370DB",
+      "definition": "Changer une donnée d'un format ou unité vers un autre.",
+      "traduction": "حوّل",
+      "exemple": "Convertis 1024 kilo-octets en méga-octets.",
+      "exercice": {
+          "type": "cloze",
+          "question": "Convertis 1 000 méga-octets en giga-octets : ____ Go.",
+          "phrase": "Convertis 1 000 méga-octets en giga-octets : ____ Go.",
+          "trous": [
+              "1"
+          ],
+          "choix": [
+              "0,1",
+              "1",
+              "10",
+              "100"
+          ]
+      }
+  },
+  {
+      "id": "distinguer",
+      "verbe": "Distinguer",
+      "emoji": "🔍",
+      "couleur": "#20B2AA",
+      "definition": "Reconnaître et différencier des éléments entre eux.",
+      "traduction": "ميز",
+      "exemple": "Distingue un logiciel libre d'un logiciel propriétaire.",
+      "exercice": {
+          "type": "relier",
+          "question": "Associez chaque type de logiciel à sa caractéristique.",
+          "gauche": [
+              "Logiciel libre",
+              "Logiciel propriétaire"
+          ],
+          "droite": [
+              "Peut être modifié et redistribué librement",
+              "Licence restreinte, non modifiable"
+          ],
+          "paires": [
+              [
+                  0,
+                  0
+              ],
+              [
+                  1,
+                  1
+              ]
+          ]
+      }
+  },
+  {
+      "id": "expliquer",
+      "verbe": "Expliquer",
+      "emoji": "💡",
+      "couleur": "#FFD700",
+      "definition": "Rendre clair un phénomène ou un concept par des détails.",
+      "traduction": "شرح",
+      "exemple": "Explique comment fonctionne un routeur dans un réseau.",
+      "exercice": {
+          "type": "cloze",
+          "question": "Explique pourquoi l’antivirus est important : Il protège l’ordinateur contre les ____.",
+          "phrase": "Il protège l’ordinateur contre les ____.",
+          "trous": [
+              "virus"
+          ],
+          "choix": [
+              "virus",
+              "documents",
+              "applications",
+              "réseaux"
+          ]
+      }
+  },
+  {
+      "id": "justifier",
+      "verbe": "Justifier",
+      "emoji": "📏",
+      "couleur": "#FF1493",
+      "definition": "Donner une raison ou un argument pour soutenir une réponse ou un choix.",
+      "traduction": "برر",
+      "exemple": "Justifie le choix de l’ordinateur portable pour une présentation.",
+      "exercice": {
+          "type": "qcm",
+          "question": "Pourquoi choisir un ordinateur portable pour une présentation ?",
+          "choix": [
+              {
+                  "texte": "Pour sa mobilité et facilité de transport",
+                  "correct": true
+              },
+              {
+                  "texte": "Parce qu’il est plus lent",
+                  "correct": false
+              },
+              {
+                  "texte": "Parce qu’il ne possède pas de batterie",
+                  "correct": false
+              },
+              {
+                  "texte": "Parce qu’il est plus grand que le bureau",
+                  "correct": false
+              }
+          ],
+          "multiple": false
+      }
+  },
+  {
+      "id": "saisir",
+      "verbe": "Saisir",
+      "emoji": "⌨️",
+      "couleur": "#00CED1",
+      "definition": "Entrer des données ou du texte dans un système informatique.",
+      "traduction": "أدخل",
+      "exemple": "Saisis ton prénom dans le formulaire en ligne.",
+      "exercice": {
+          "type": "cloze",
+          "question": "Pour compléter le formulaire, il faut saisir son ____.",
+          "phrase": "Pour compléter le formulaire, il faut saisir son ____.",
+          "trous": [
+              "nom"
+          ],
+          "choix": [
+              "nom",
+              "papier",
+              "ordinateur",
+              "cahier"
+          ]
+      }
+  },
+  {
+      "id": "enregistrer",
+      "verbe": "Enregistrer",
+      "emoji": "💾",
+      "couleur": "#008000",
+      "definition": "Sauvegarder des données sur un support de stockage.",
+      "traduction": "احفظ",
+      "exemple": "Enregistre ton document avant de fermer le logiciel.",
+      "exercice": {
+          "type": "qcm",
+          "question": "Pourquoi est-il important d'enregistrer son travail régulièrement ?",
+          "choix": [
+              {
+                  "texte": "Pour ne pas perdre les modifications",
+                  "correct": true
+              },
+              {
+                  "texte": "Pour fermer le logiciel plus vite",
+                  "correct": false
+              },
+              {
+                  "texte": "Pour ralentir l'ordinateur",
+                  "correct": false
+              },
+              {
+                  "texte": "Pour augmenter la taille du fichier",
+                  "correct": false
+              }
+          ],
+          "multiple": false
+      }
   }
 ];
