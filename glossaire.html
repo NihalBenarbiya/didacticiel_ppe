@@ -302,11 +302,18 @@
         if (wrap && !wrap.dataset.loaded) {
           wrap.dataset.loaded = '1';
 
+          const showEmojiFallback = () => {
+            const icon = card.querySelector('.card-icon');
+            const emoji = icon ? icon.textContent.trim() : '💻';
+            const color = card.querySelector('.card-icon') ? window.getComputedStyle(card.querySelector('.card-icon')).backgroundColor : '#dbeafe';
+            wrap.innerHTML = `<div style="width:100%;height:140px;display:flex;align-items:center;justify-content:center;font-size:72px;background:${color};border-radius:8px;">${emoji}</div>`;
+          };
+
           const showImg = (src, creditHtml) => {
             const img = document.createElement('img');
-            img.alt = term; img.loading = 'lazy'; img.referrerPolicy = 'no-referrer';
+            img.alt = term; img.loading = 'lazy';
             img.src = src;
-            img.onerror = () => { wrap.innerHTML = `<span style="font-size:13px;color:var(--muted);padding:16px;text-align:center;display:block">🖼️ Image non disponible</span>`; };
+            img.onerror = showEmojiFallback;
             wrap.innerHTML = '';
             wrap.appendChild(img);
             if (credit && creditHtml) credit.innerHTML = creditHtml;
@@ -323,10 +330,10 @@
                 if (src) {
                   showImg(src, `Source : <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(article)}" target="_blank" rel="noopener">Wikipedia — ${article}</a>`);
                 } else {
-                  wrap.innerHTML = `<span style="font-size:13px;color:var(--muted);padding:16px;text-align:center;display:block">🖼️ Image non disponible</span>`;
+                  showEmojiFallback();
                 }
               })
-              .catch(() => { wrap.innerHTML = `<span style="font-size:13px;color:var(--muted);padding:16px;text-align:center;display:block">🖼️ Image non disponible</span>`; });
+              .catch(() => { showEmojiFallback(); });
 
           // 2. DIRECT URL (fallback if ever needed)
           } else if (card.dataset.imgUrl) {
@@ -343,7 +350,7 @@
               if (photo) {
                 showImg(photo.src, `Photo : <a href="${photo.url}" target="_blank" rel="noopener">📷 ${photo.photographer}</a> — Pixabay`);
               } else {
-                wrap.innerHTML = `<span style="font-size:13px;color:var(--muted);padding:16px;text-align:center;display:block">🖼️ Image non disponible</span>`;
+                showEmojiFallback();
               }
             });
           }

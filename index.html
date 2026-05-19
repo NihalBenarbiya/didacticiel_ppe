@@ -374,56 +374,56 @@
     </div>
 
   </main>
-
+  <script src="verbes-data.js"></script>
   <script>
 /* ── Données des verbes ──────────────────────────────── */
-window.VERBES_DATA = [
-  {
-    id: 'saisir', verbe: 'Saisir', emoji: '⌨️', couleur: '#3b82f6',
-    definition: 'Écrire du texte ou des nombres à l\'aide du clavier.',
-    traduction: 'كتابة / إدخال',
-    exemple: 'Saisis ton nom et ton prénom dans le formulaire.',
-    exercice: {
-      type: 'qcm', question: 'Quel outil utilises-tu pour "Saisir" ?',
-      choix: [
-        { texte: 'La souris', correct: false },
-        { texte: 'Le clavier', correct: true },
-        { texte: 'L\'imprimante', correct: false }
-      ],
-      explication: 'Saisir signifie entrer des données via le clavier.'
-    }
-  },
-  {
-    id: 'classer', verbe: 'Classer', emoji: '📁', couleur: '#10b981',
-    definition: 'Ranger des fichiers ou des dossiers dans un ordre précis.',
-    traduction: 'تصنيف',
-    exemple: 'Classe ces fichiers par ordre alphabétique.',
-    exercice: {
-      type: 'qcm', question: 'Classer des fichiers permet de :',
-      choix: [
-        { texte: 'Mettre en ordre selon des critères', correct: true },
-        { texte: 'Supprimer les documents inutiles', correct: false },
-        { texte: 'Lire un document', correct: false }
-      ],
-      explication: 'Classer signifie organiser, ranger selon un ordre logique.'
-    }
-  },
-  {
-    id: 'creer', verbe: 'Créer', emoji: '✨', couleur: '#f59e0b',
-    definition: 'Donner naissance à quelque chose de nouveau qui n\'existait pas.',
-    traduction: 'إنشاء',
-    exemple: 'Crée un nouveau dossier nommé "Images".',
-    exercice: {
-      type: 'qcm', question: 'Si on te demande de "Créer" un fichier, tu dois :',
-      choix: [
-        { texte: 'Ouvrir un fichier existant', correct: false },
-        { texte: 'Fabriquer un nouveau fichier', correct: true },
-        { texte: 'Déplacer le fichier', correct: false }
-      ],
-      explication: 'Créer implique l\'apparition d\'un nouvel élément.'
-    }
-  }
-];
+// window.VERBES_DATA = [
+//   {
+//     id: 'saisir', verbe: 'Saisir', emoji: '⌨️', couleur: '#3b82f6',
+//     definition: 'Écrire du texte ou des nombres à l\'aide du clavier.',
+//     traduction: 'كتابة / إدخال',
+//     exemple: 'Saisis ton nom et ton prénom dans le formulaire.',
+//     exercice: {
+//       type: 'qcm', question: 'Quel outil utilises-tu pour "Saisir" ?',
+//       choix: [
+//         { texte: 'La souris', correct: false },
+//         { texte: 'Le clavier', correct: true },
+//         { texte: 'L\'imprimante', correct: false }
+//       ],
+//       explication: 'Saisir signifie entrer des données via le clavier.'
+//     }
+//   },
+//   {
+//     id: 'classer', verbe: 'Classer', emoji: '📁', couleur: '#10b981',
+//     definition: 'Ranger des fichiers ou des dossiers dans un ordre précis.',
+//     traduction: 'تصنيف',
+//     exemple: 'Classe ces fichiers par ordre alphabétique.',
+//     exercice: {
+//       type: 'qcm', question: 'Classer des fichiers permet de :',
+//       choix: [
+//         { texte: 'Mettre en ordre selon des critères', correct: true },
+//         { texte: 'Supprimer les documents inutiles', correct: false },
+//         { texte: 'Lire un document', correct: false }
+//       ],
+//       explication: 'Classer signifie organiser, ranger selon un ordre logique.'
+//     }
+//   },
+//   {
+//     id: 'creer', verbe: 'Créer', emoji: '✨', couleur: '#f59e0b',
+//     definition: 'Donner naissance à quelque chose de nouveau qui n\'existait pas.',
+//     traduction: 'إنشاء',
+//     exemple: 'Crée un nouveau dossier nommé "Images".',
+//     exercice: {
+//       type: 'qcm', question: 'Si on te demande de "Créer" un fichier, tu dois :',
+//       choix: [
+//         { texte: 'Ouvrir un fichier existant', correct: false },
+//         { texte: 'Fabriquer un nouveau fichier', correct: true },
+//         { texte: 'Déplacer le fichier', correct: false }
+//       ],
+//       explication: 'Créer implique l\'apparition d\'un nouvel élément.'
+//     }
+//   }
+// ];
 
 /* ── Navigation ──────────────────────────────────────── */
 function showView(id) {

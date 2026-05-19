@@ -21,7 +21,7 @@ const GLOSSARY = [
   // ── A ──
   {
     term: "Adresse IP",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Ipv4_address.svg/320px-Ipv4_address.svg.png",
+    img: "wp:IP address",
     icon: "🌐", color: "#dbeafe",
     ar: "عنوان IP — رقم فريد يُعطى لكل جهاز متصل بالإنترنت.",
     def: "Numéro unique attribué à chaque ordinateur sur un réseau. C'est comme l'adresse postale de ton ordinateur sur Internet.",
@@ -30,7 +30,7 @@ const GLOSSARY = [
   },
   {
     term: "Adresse URL",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/URI_syntax_diagram.svg/320px-URI_syntax_diagram.svg.png",
+    img: "wp:URL",
     icon: "🔗", color: "#e0f2fe",
     ar: "عنوان URL — الرابط الفريد لصفحة ويب على الإنترنت.",
     def: "Adresse unique d'une page web sur Internet. Elle s'écrit dans la barre d'adresse du navigateur.",
@@ -39,7 +39,7 @@ const GLOSSARY = [
   },
   {
     term: "ADSL",
-    img: "wp:ADSL",
+    img: "wp:DSL modem",
     icon: "📡", color: "#f0fdf4",
     ar: "ADSL — تقنية توصيل بالإنترنت عبر خط الهاتف بسرعة عالية.",
     def: "Technologie de connexion Internet haut débit via la ligne téléphonique. Le débit descendant (téléchargement) est plus rapide que le débit montant.",
@@ -48,7 +48,7 @@ const GLOSSARY = [
   },
   {
     term: "Antivirus",
-    img: "wp:Antivirus software",
+    img: "wp:Malware",
     icon: "🛡️", color: "#fef9c3",
     ar: "مضاد الفيروسات — برنامج يحمي الحاسوب من الفيروسات والبرامج الضارة.",
     def: "Logiciel qui surveille et protège ton ordinateur contre les virus et programmes malveillants. Il doit être mis à jour régulièrement.",
@@ -57,7 +57,7 @@ const GLOSSARY = [
   },
   {
     term: "Application",
-    img: "wp:Application software",
+    img: "wp:Mobile app",
     icon: "📱", color: "#f3e8ff",
     ar: "تطبيق — برنامج يُشغَّل لتنفيذ مهمة محددة على الحاسوب.",
     def: "Programme informatique conçu pour réaliser une tâche précise. On dit aussi logiciel ou programme.",
@@ -66,7 +66,7 @@ const GLOSSARY = [
   },
   {
     term: "Arborescence",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Folder_structure.jpg/320px-Folder_structure.jpg",
+    img: "computer folders hierarchy",
     icon: "🌳", color: "#dcfce7",
     ar: "شجرة الملفات — التنظيم الهرمي للمجلدات والملفات على القرص الصلب.",
     def: "Organisation hiérarchique des dossiers et fichiers sur un ordinateur, comme un arbre avec des branches.",
@@ -77,7 +77,7 @@ const GLOSSARY = [
   // ── B ──
   {
     term: "Backup",
-    img: "wp:Backup",
+    img: "wp:USB flash drive",
     icon: "💾", color: "#fef3c7",
     ar: "نسخة احتياطية — نسخ الملفات على دعامة خارجية حفاظًا عليها.",
     def: "Copie de sauvegarde de tes fichiers sur un support externe (clé USB, CD, disque dur externe) pour ne pas les perdre.",
@@ -86,7 +86,7 @@ const GLOSSARY = [
   },
   {
     term: "Bande passante",
-    img: "wp:Bandwidth (computing)",
+    img: "wp:Data-rate units",
     icon: "📶", color: "#e0f2fe",
     ar: "عرض النطاق الترددي — سرعة نقل البيانات عبر الشبكة.",
     def: "Vitesse à laquelle des données peuvent être transférées sur un réseau. Elle se mesure en Kbits/s ou Mbits/s.",
@@ -95,7 +95,7 @@ const GLOSSARY = [
   },
   {
     term: "Bug",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/ASimpleProgram_Decoded.svg/320px-ASimpleProgram_Decoded.svg.png",
+    img: "wp:Software bug",
     icon: "🐛", color: "#fee2e2",
     ar: "خطأ برمجي — عطل في البرنامج ناتج عن خطأ في الكود.",
     def: "Erreur de programmation qui provoque un mauvais fonctionnement d'un logiciel. L'utilisateur ne peut pas le corriger lui-même.",
@@ -104,7 +104,7 @@ const GLOSSARY = [
   },
   {
     term: "Bureau",
-    img: "wp:Desktop (computing)",
+    img: "wp:Desktop computer",
     icon: "🖥️", color: "#f0fdf4",
     ar: "سطح المكتب — الشاشة الرئيسية التي تظهر عند تشغيل الحاسوب.",
     def: "Écran principal qui s'affiche au démarrage de l'ordinateur, avec les icônes et l'arrière-plan.",
@@ -113,7 +113,7 @@ const GLOSSARY = [
   },
   {
     term: "Bureautique",
-    img: "wp:Office suite",
+    img: "wp:LibreOffice",
     icon: "📄", color: "#e8eefe",
     ar: "البرمجيات المكتبية — مجموعة التطبيقات المستخدمة في الأعمال الإدارية.",
     def: "Ensemble des logiciels utilisés pour les travaux de bureau : traitement de texte, tableur, base de données.",
@@ -151,7 +151,7 @@ const GLOSSARY = [
   },
   {
     term: "CPU",
-    img: "wp:Central processing unit",
+    img: "wp:Microprocessor",
     icon: "⚡", color: "#fef9c3",
     ar: "المعالج — دماغ الحاسوب الذي يُنفِّذ جميع العمليات الحسابية.",
     def: "Le processeur est le cerveau de l'ordinateur. Il exécute les calculs et traite les instructions des programmes.",
@@ -171,7 +171,7 @@ const GLOSSARY = [
   },
   {
     term: "Dossier",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Gnome-fs-directory.svg/240px-Gnome-fs-directory.svg.png",
+    img: "wp:Directory (computing)",
     icon: "📁", color: "#fef3c7",
     ar: "المجلد — حاوية افتراضية لتنظيم الملفات على الحاسوب.",
     def: "Répertoire permettant d'organiser et ranger des fichiers. Un dossier peut contenir d'autres dossiers (sous-dossiers).",
@@ -180,7 +180,7 @@ const GLOSSARY = [
   },
   {
     term: "Double-clic",
-    img: "wp:Double-click",
+    img: "wp:Computer mouse",
     icon: "🖱️", color: "#f3e8ff",
     ar: "النقر المزدوج — الضغط المتتالي على زر الفأرة مرتين بسرعة لفتح ملف أو برنامج.",
     def: "Action de cliquer deux fois rapidement sur le bouton gauche de la souris pour ouvrir un fichier ou un logiciel.",
@@ -220,7 +220,7 @@ const GLOSSARY = [
   },
   {
     term: "Firewall",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Firewall.png/320px-Firewall.png",
+    img: "wp:Firewall (computing)",
     icon: "🔥", color: "#fee2e2",
     ar: "جدار الحماية — نظام يراقب حركة البيانات ويمنع الوصول غير المصرح به.",
     def: "Logiciel ou matériel qui filtre les connexions réseau pour protéger l'ordinateur des intrusions extérieures.",
@@ -293,7 +293,7 @@ const GLOSSARY = [
   // ── M ──
   {
     term: "Mémoire RAM",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Swissbit_2GB_PC2-5300U-555.jpg/320px-Swissbit_2GB_PC2-5300U-555.jpg",
+    img: "wp:Random-access memory",
     icon: "🧠", color: "#fef9c3",
     ar: "ذاكرة الوصول العشوائي — ذاكرة مؤقتة تُخزِّن البيانات أثناء عمل الحاسوب.",
     def: "Mémoire temporaire de l'ordinateur qui stocke les données des programmes en cours d'utilisation. Elle s'efface à l'extinction.",
@@ -322,7 +322,7 @@ const GLOSSARY = [
   // ── N ──
   {
     term: "Navigateur",
-    img: "wp:Web browser",
+    img: "wp:Firefox",
     icon: "🧭", color: "#e0f2fe",
     ar: "متصفح الإنترنت — برنامج للتنقل بين صفحات الويب.",
     def: "Logiciel permettant d'accéder aux sites web et de naviguer sur Internet. Ex : Chrome, Firefox, Edge.",
@@ -331,7 +331,7 @@ const GLOSSARY = [
   },
   {
     term: "Numérique",
-    img: "wp:Digital data",
+    img: "wp:Binary number",
     icon: "🔢", color: "#dbeafe",
     ar: "الرقمي — كل ما يُمثَّل بأرقام ثنائية (0 و1) في الأنظمة الإلكترونية.",
     def: "Qui utilise des données représentées par des chiffres binaires (0 et 1). S'oppose à analogique.",
@@ -342,7 +342,7 @@ const GLOSSARY = [
   // ── O ──
   {
     term: "Ordinateur",
-    img: "wp:Personal computer",
+    img: "wp:Desktop computer",
     icon: "🖥️", color: "#f0f4ff",
     ar: "الحاسوب — جهاز إلكتروني يعالج البيانات وينفذ المهام وفق برامج مُبرمجة.",
     def: "Machine électronique qui traite des informations selon des instructions (programmes). Il peut calculer, stocker, afficher et communiquer.",
@@ -371,7 +371,7 @@ const GLOSSARY = [
   },
   {
     term: "Pixel",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Pixel-example.png/320px-Pixel-example.png",
+    img: "wp:Pixel",
     icon: "🔲", color: "#f3e8ff",
     ar: "البِكسل — أصغر نقطة ملونة تتكون منها الصورة الرقمية على الشاشة.",
     def: "Plus petit élément d'une image numérique. Un écran est composé de millions de pixels formant l'image.",
@@ -380,7 +380,7 @@ const GLOSSARY = [
   },
   {
     term: "Processeur",
-    img: "wp:Central processing unit",
+    img: "wp:Microprocessor",
     icon: "⚡", color: "#fef9c3",
     ar: "المعالج — الدماغ الإلكتروني للحاسوب الذي ينفذ التعليمات البرمجية.",
     def: "Cerveau de l'ordinateur qui exécute les calculs. Sa vitesse se mesure en GHz (gigahertz).",
@@ -391,7 +391,7 @@ const GLOSSARY = [
   // ── R ──
   {
     term: "RAM",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Swissbit_2GB_PC2-5300U-555.jpg/320px-Swissbit_2GB_PC2-5300U-555.jpg",
+    img: "wp:Random-access memory",
     icon: "🧠", color: "#fef9c3",
     ar: "ذاكرة الوصول العشوائي — انظر 'مémoire RAM'.",
     def: "Voir Mémoire RAM. Random Access Memory : mémoire vive temporaire de l'ordinateur.",
@@ -400,7 +400,7 @@ const GLOSSARY = [
   },
   {
     term: "Réseau",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Netzwerk.jpg/320px-Netzwerk.jpg",
+    img: "wp:Computer network",
     icon: "🕸️", color: "#e0f2fe",
     ar: "الشبكة — مجموعة حواسيب مترابطة لتبادل الملفات والمعلومات.",
     def: "Ensemble d'ordinateurs reliés entre eux pour partager des ressources (fichiers, imprimantes, connexion Internet).",
@@ -467,7 +467,7 @@ const GLOSSARY = [
   },
   {
     term: "Traitement de texte",
-    img: "wp:Word processor",
+    img: "wp:LibreOffice Writer",
     icon: "📝", color: "#e8eefe",
     ar: "معالج النصوص — برنامج لكتابة الوثائق وتنسيقها (مثل Microsoft Word).",
     def: "Logiciel permettant de rédiger, corriger et mettre en forme des documents textuels.",
@@ -478,7 +478,7 @@ const GLOSSARY = [
   // ── U ──
   {
     term: "USB",
-    img: "wp:USB",
+    img: "wp:USB flash drive",
     icon: "🔌", color: "#fef3c7",
     ar: "USB — منفذ قياسي لتوصيل الأجهزة الطرفية بالحاسوب.",
     def: "Port standard pour connecter des périphériques à l'ordinateur : clé USB, souris, imprimante, disque dur externe…",
@@ -489,7 +489,7 @@ const GLOSSARY = [
   // ── V ──
   {
     term: "Virus",
-    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Virus_stained.JPG/320px-Virus_stained.JPG",
+    img: "wp:Computer virus",
     icon: "🦠", color: "#fee2e2",
     ar: "الفيروس — برنامج خبيث يُلحق الأضرار بالحاسوب ويتكاثر تلقائيًا.",
     def: "Programme malveillant qui s'installe à ton insu et peut détruire tes fichiers ou voler tes données.",

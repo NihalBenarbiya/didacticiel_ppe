@@ -71,15 +71,15 @@ const ACTIVITIES = [
   },
 
   // ── Ajoutez vos activités 2APIC ici ──────────────────────────
-  // {
-  //   gridId: "grid-2-U3-C12",
-  //   title:  "Nom de l'activité",
-  //   id:     "CODE_LEARNINGAPPS",
-  //   icon:   83,
-  //   color:  "#d1fae5",
-  //   level:  "2APIC",
-  //   dot:    "#059669"
-  // },
+  {
+    gridId: "grid-2-U3-C12",
+    title:  "tableur",
+    id:     "p873b7s8a26",
+    icon:   83,
+    color:  "#d1fae5",
+    level:  "2APIC",
+    dot:    "#059669"
+  },
 
   // ── Ajoutez vos activités 3APIC ici ──────────────────────────
   // {
