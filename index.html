@@ -164,6 +164,7 @@
       max-width: 900px;
       padding: 40px 32px;
       min-height: calc(100vh - var(--topbar-h));
+      position: relative;
     }
 
     /* ── Footer (injected by nav.js) ── */
@@ -263,9 +264,23 @@
     .verbe-chip .action { font-size: 12px; color: var(--text); margin-top: 4px; font-style: italic; }
     .verbe-chip .ar { direction: rtl; font-family: var(--font-ar); font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.9; }
 
-    .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; }
-    .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.6; }
-    .checklist input[type="checkbox"] { margin-top: 3px; width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+    .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; padding: 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; }
+    .checklist input[type="checkbox"] { margin-top: 5px; width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+    .checklist label { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .step-fr { font-size: 14px; color: var(--text); line-height: 1.6; }
+    .step-ar { direction: rtl; text-align: right; font-family: var(--font-ar); font-size: 13px; color: var(--muted); line-height: 1.9; background: var(--surface2); border-radius: 6px; padding: 2px 8px; border-right: 3px solid var(--accent); }
+    .objectif-ar { direction: rtl; text-align: right; font-family: var(--font-ar); font-size: 15px; color: var(--muted); line-height: 1.9; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+    .hors-sujet-card {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: #fff7ed; border: 1.5px solid #fed7aa;
+      border-radius: var(--radius); padding: 24px;
+    }
+    .hors-sujet-icon { font-size: 32px; flex-shrink: 0; }
+    .hors-sujet-content { display: flex; flex-direction: column; gap: 10px; }
+    .hors-sujet-fr { font-size: 14px; color: #92400e; font-weight: 600; margin: 0; line-height: 1.6; }
+    .hors-sujet-ar { direction: rtl; text-align: right; font-family: var(--font-ar); font-size: 16px; color: #92400e; margin: 0; line-height: 2; background: #fef3c7; border-radius: 8px; padding: 8px 12px; }
 
     .arabic-block {
       direction: rtl; text-align: right;
@@ -327,6 +342,11 @@
         <label class="lbl">Consigne à analyser</label>
         <textarea id="consigne" rows="4" placeholder="Ex: Saisir le texte et mettre le titre en gras et en rouge..."></textarea>
         
+        <div id="traduction-inline" style="display:none; margin-top: 12px;">
+          <label class="lbl" style="margin-bottom: 6px;">Traduction de la consigne</label>
+          <p id="traduction-inline-text" class="arabic-block" style="margin: 0;"></p>
+        </div>
+
         <div class="btn-row">
           <button id="btn" class="primary" onclick="decoder()">
             <span>🚀</span> Analyser la consigne
@@ -518,44 +538,284 @@ function renderExercise(ex) {
 
   if (ex.type === 'qcm') {
     const wrap = document.createElement('div');
-    wrap.style.display = 'flex';
-    wrap.style.flexDirection = 'column';
-    wrap.style.gap = '8px';
+    wrap.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
     ex.choix.forEach((c, i) => {
       const opt = document.createElement('div');
-      opt.style.padding = '12px';
-      opt.style.border = '1.5px solid var(--border)';
-      opt.style.borderRadius = '8px';
-      opt.style.cursor = 'pointer';
+      opt.style.cssText = 'padding:12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;';
       opt.dataset.index = i;
-      opt.innerHTML = `<span>${c.texte}</span>`;
-      opt.onclick = () => {
-        wrap.querySelectorAll('div').forEach(o => {
+      if (ex.multiple) {
+        opt.innerHTML = `<span style="width:18px;height:18px;border:2px solid var(--border);border-radius:4px;display:inline-block;flex-shrink:0;" class="chk-box"></span><span>${c.texte}</span>`;
+        opt.onclick = () => {
+          opt.classList.toggle('selected');
+          const box = opt.querySelector('.chk-box');
+          if (opt.classList.contains('selected')) {
+            opt.style.background = 'var(--accent-light)';
+            opt.style.borderColor = 'var(--accent)';
+            box.style.background = 'var(--accent)';
+            box.style.borderColor = 'var(--accent)';
+            box.innerHTML = '<svg width="12" height="12" viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+          } else {
+            opt.style.background = '';
+            opt.style.borderColor = 'var(--border)';
+            box.style.background = '';
+            box.style.borderColor = 'var(--border)';
+            box.innerHTML = '';
+          }
+        };
+      } else {
+        opt.innerHTML = `<span style="width:18px;height:18px;border:2px solid var(--border);border-radius:50%;display:inline-block;flex-shrink:0;" class="chk-box"></span><span>${c.texte}</span>`;
+        opt.onclick = () => {
+          wrap.querySelectorAll('div').forEach(o => {
             o.style.background = '';
             o.style.borderColor = 'var(--border)';
             o.classList.remove('selected');
-        });
-        opt.style.background = 'var(--accent-light)';
-        opt.style.borderColor = 'var(--accent)';
-        opt.classList.add('selected');
-      };
+            const b = o.querySelector('.chk-box');
+            if (b) { b.style.background = ''; b.style.borderColor = 'var(--border)'; b.innerHTML = ''; }
+          });
+          opt.style.background = 'var(--accent-light)';
+          opt.style.borderColor = 'var(--accent)';
+          opt.classList.add('selected');
+          const box = opt.querySelector('.chk-box');
+          box.style.background = 'var(--accent)';
+          box.style.borderColor = 'var(--accent)';
+          box.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3" fill="white"/></svg>';
+        };
+      }
       wrap.appendChild(opt);
     });
     body.appendChild(wrap);
+
+  } else if (ex.type === 'cloze') {
+    // Show the phrase with a dropdown in place of ____
+    const phraseEl = document.createElement('p');
+    phraseEl.style.cssText = 'font-size:15px;line-height:2;margin-bottom:14px;';
+    // Split on ____ to find the blank position
+    const parts = ex.phrase.split('____');
+    const select = document.createElement('select');
+    select.id = 'cloze-select';
+    select.style.cssText = 'font-size:14px;padding:4px 8px;border:1.5px solid var(--accent);border-radius:6px;background:var(--accent-light);color:var(--accent);font-weight:700;cursor:pointer;margin:0 4px;font-family:var(--font);';
+    const blank = document.createElement('option');
+    blank.value = '';
+    blank.textContent = '— choisir —';
+    select.appendChild(blank);
+    ex.choix.forEach(ch => {
+      const o = document.createElement('option');
+      o.value = ch;
+      o.textContent = ch;
+      select.appendChild(o);
+    });
+    phraseEl.append(parts[0] || '');
+    phraseEl.append(select);
+    phraseEl.append(parts[1] || '');
+    body.appendChild(phraseEl);
+
+  } else if (ex.type === 'relier') {
+    // Matching exercise — click left then click right to form a pair
+    body.innerHTML = `
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Clique sur un élément à gauche, puis sur sa correspondance à droite.</p>
+      <div id="relier-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+      <div id="relier-pairs" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;"></div>`;
+    const wrap = document.getElementById('relier-wrap');
+
+    const leftSel = { el: null, idx: null };
+    const userPairs = []; // [{l, r}]
+
+    function renderItems() {
+      wrap.innerHTML = '';
+      // Left column
+      const leftCol = document.createElement('div');
+      leftCol.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+      ex.gauche.forEach((txt, i) => {
+        const alreadyPaired = userPairs.some(p => p.l === i);
+        const btn = document.createElement('button');
+        btn.dataset.side = 'left';
+        btn.dataset.idx = i;
+        btn.textContent = txt;
+        btn.style.cssText = `padding:10px 12px;border:1.5px solid ${alreadyPaired ? '#a3e635' : 'var(--border)'};border-radius:8px;background:${alreadyPaired ? '#f7fee7' : 'var(--surface2)'};cursor:${alreadyPaired ? 'default' : 'pointer'};font-size:13px;text-align:left;font-family:var(--font);color:var(--text);`;
+        if (!alreadyPaired) {
+          btn.onclick = () => {
+            wrap.querySelectorAll('[data-side=left]').forEach(b => { b.style.borderColor = 'var(--border)'; b.style.background = 'var(--surface2)'; });
+            btn.style.borderColor = 'var(--accent)';
+            btn.style.background = 'var(--accent-light)';
+            leftSel.el = btn;
+            leftSel.idx = i;
+          };
+        }
+        leftCol.appendChild(btn);
+      });
+
+      // Right column
+      const rightCol = document.createElement('div');
+      rightCol.style.cssText = 'display:flex;flex-direction:column;gap:8px;';
+      ex.droite.forEach((txt, j) => {
+        const alreadyPaired = userPairs.some(p => p.r === j);
+        const btn = document.createElement('button');
+        btn.dataset.side = 'right';
+        btn.dataset.idx = j;
+        btn.textContent = txt;
+        btn.style.cssText = `padding:10px 12px;border:1.5px solid ${alreadyPaired ? '#a3e635' : 'var(--border)'};border-radius:8px;background:${alreadyPaired ? '#f7fee7' : 'var(--surface2)'};cursor:${alreadyPaired ? 'default' : 'pointer'};font-size:13px;text-align:left;font-family:var(--font);color:var(--text);`;
+        if (!alreadyPaired) {
+          btn.onclick = () => {
+            if (leftSel.idx === null) return;
+            userPairs.push({ l: leftSel.idx, r: j });
+            leftSel.el = null;
+            leftSel.idx = null;
+            renderItems();
+            renderPairsLog();
+          };
+        }
+        rightCol.appendChild(btn);
+      });
+
+      wrap.appendChild(leftCol);
+      wrap.appendChild(rightCol);
+    }
+
+    function renderPairsLog() {
+      const log = document.getElementById('relier-pairs');
+      log.innerHTML = userPairs.map(p =>
+        `<div style="display:flex;align-items:center;gap:8px;font-size:13px;background:var(--surface2);border-radius:6px;padding:6px 10px;">
+          <span style="color:var(--accent);font-weight:600;">${ex.gauche[p.l]}</span>
+          <span style="color:var(--muted);">↔</span>
+          <span style="color:var(--accent);font-weight:600;">${ex.droite[p.r]}</span>
+          <button onclick="removePair(${p.l})" style="margin-left:auto;border:none;background:none;cursor:pointer;color:var(--muted);font-size:16px;">✕</button>
+        </div>`
+      ).join('');
+    }
+
+    window.removePair = (lIdx) => {
+      const i = userPairs.findIndex(p => p.l === lIdx);
+      if (i !== -1) userPairs.splice(i, 1);
+      renderItems();
+      renderPairsLog();
+    };
+
+    // Store reference for checkExercise
+    body._getUserPairs = () => userPairs;
+    body._correctPairs = ex.paires; // [[l,r],...]
+    renderItems();
+
+  } else if (ex.type === 'trier') {
+    // Drag-or-click items into categories
+    body.innerHTML = `
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">Clique sur un élément pour le placer dans la bonne catégorie.</p>
+      <div id="trier-items" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;"></div>
+      <div id="trier-cats" style="display:grid;grid-template-columns:repeat(${ex.categories.length},1fr);gap:12px;"></div>`;
+
+    const itemsWrap = document.getElementById('trier-items');
+    const catsWrap = document.getElementById('trier-cats');
+
+    const placements = {}; // itemIndex -> catIndex
+
+    function rebuildTrier() {
+      itemsWrap.innerHTML = '';
+      catsWrap.innerHTML = '';
+
+      // Unplaced items
+      ex.items.forEach((txt, i) => {
+        if (placements[i] !== undefined) return;
+        const chip = document.createElement('div');
+        chip.textContent = txt;
+        chip.style.cssText = 'padding:8px 14px;border:1.5px solid var(--accent);border-radius:20px;background:var(--accent-light);color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;';
+        chip.onclick = () => showCatPicker(i, chip);
+        itemsWrap.appendChild(chip);
+      });
+
+      // Category bins
+      ex.categories.forEach((catName, ci) => {
+        const bin = document.createElement('div');
+        bin.style.cssText = 'border:1.5px dashed var(--border);border-radius:10px;padding:12px;min-height:70px;';
+        const title = document.createElement('div');
+        title.style.cssText = 'font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:8px;';
+        title.textContent = catName;
+        bin.appendChild(title);
+        // Items in this category
+        Object.entries(placements).forEach(([iStr, c]) => {
+          if (c !== ci) return;
+          const idx = +iStr;
+          const tag = document.createElement('div');
+          tag.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:16px;background:#d1fae5;color:#065f46;font-size:12px;font-weight:600;margin:3px;cursor:pointer;';
+          tag.innerHTML = `${ex.items[idx]} <span style="opacity:.6;">✕</span>`;
+          tag.onclick = () => { delete placements[idx]; rebuildTrier(); };
+          bin.appendChild(tag);
+        });
+        catsWrap.appendChild(bin);
+      });
+    }
+
+    function showCatPicker(itemIdx, anchor) {
+      // Remove any existing picker
+      document.querySelectorAll('.cat-picker').forEach(p => p.remove());
+      const picker = document.createElement('div');
+      picker.className = 'cat-picker';
+      picker.style.cssText = 'position:absolute;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:999;padding:8px;display:flex;flex-direction:column;gap:6px;';
+      ex.categories.forEach((cat, ci) => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.style.cssText = 'padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface2);cursor:pointer;font-size:13px;text-align:left;font-family:var(--font);white-space:nowrap;';
+        btn.onmouseenter = () => { btn.style.background = 'var(--accent-light)'; btn.style.borderColor = 'var(--accent)'; };
+        btn.onmouseleave = () => { btn.style.background = 'var(--surface2)'; btn.style.borderColor = 'var(--border)'; };
+        btn.onclick = () => { placements[itemIdx] = ci; picker.remove(); rebuildTrier(); };
+        picker.appendChild(btn);
+      });
+      anchor.style.position = 'relative';
+      anchor.appendChild(picker);
+    }
+
+    body._getPlacements = () => placements;
+    body._trierData = ex;
+    rebuildTrier();
   }
 }
 
 function checkExercise() {
   const v = currentVerbe;
   const ex = v.exercice;
+  const body = document.getElementById('vd-ex-body');
   let correct = false;
+  let explication = ex.explication || '';
 
-  const selected = document.querySelector('.view.active .selected');
-  if (!selected) return alert("Choisis une réponse !");
-  const idx = +selected.dataset.index;
-  correct = ex.choix[idx].correct;
+  if (ex.type === 'qcm') {
+    if (ex.multiple) {
+      const selected = [...document.querySelectorAll('#vd-ex-body .selected')];
+      if (selected.length === 0) return alert("Coche au moins une réponse !");
+      const selectedIdx = selected.map(s => +s.dataset.index);
+      const correctIdx = ex.choix.map((c, i) => c.correct ? i : -1).filter(i => i !== -1);
+      correct = selectedIdx.length === correctIdx.length && correctIdx.every(i => selectedIdx.includes(i));
+      if (!explication) explication = correct ? 'Toutes les bonnes cases ont été cochées !' : `Les bonnes réponses étaient : ${correctIdx.map(i => ex.choix[i].texte).join(', ')}.`;
+    } else {
+      const selected = document.querySelector('#vd-ex-body .selected');
+      if (!selected) return alert("Choisis une réponse !");
+      const idx = +selected.dataset.index;
+      correct = ex.choix[idx].correct;
+      if (!explication) {
+        const correctChoice = ex.choix.find(c => c.correct);
+        explication = correct ? 'Bonne réponse !' : `La bonne réponse était : « ${correctChoice ? correctChoice.texte : ''} ».`;
+      }
+    }
 
-  showFeedback(correct, ex.explication);
+  } else if (ex.type === 'cloze') {
+    const sel = document.getElementById('cloze-select');
+    if (!sel || sel.value === '') return alert("Choisis une réponse dans la liste !");
+    correct = ex.trous[0].toLowerCase().trim() === sel.value.toLowerCase().trim();
+    if (!explication) explication = correct ? 'Bonne réponse !' : `La bonne réponse était : « ${ex.trous[0]} ».`;
+
+  } else if (ex.type === 'relier') {
+    const userPairs = body._getUserPairs ? body._getUserPairs() : [];
+    const correctPairs = body._correctPairs || [];
+    if (userPairs.length < correctPairs.length) return alert(`Relie encore ${correctPairs.length - userPairs.length} paire(s) avant de vérifier.`);
+    correct = correctPairs.every(([cl, cr]) => userPairs.some(p => p.l === cl && p.r === cr));
+    if (!explication) explication = correct ? 'Tous les liens sont corrects !' : 'Certains liens sont incorrects. Les bonnes paires : ' + correctPairs.map(([l, r]) => `${ex.gauche[l]} ↔ ${ex.droite[r]}`).join(', ') + '.';
+
+  } else if (ex.type === 'trier') {
+    const placements = body._getPlacements ? body._getPlacements() : {};
+    const trierData = body._trierData || ex;
+    if (Object.keys(placements).length < trierData.items.length) return alert(`Place encore ${trierData.items.length - Object.keys(placements).length} élément(s) avant de vérifier.`);
+    correct = trierData.reponses.every((catIdx, i) => placements[i] === catIdx);
+    if (!explication) explication = correct ? 'Tous les éléments sont bien classés !' : 'Certains éléments sont mal classés. Les bonnes catégories : ' + trierData.items.map((item, i) => `${item} → ${trierData.categories[trierData.reponses[i]]}`).join(', ') + '.';
+  }
+
+  showFeedback(correct, explication);
   document.getElementById('vd-check-btn').style.display = 'none';
   document.getElementById('vd-retry-btn').style.display = '';
 }
@@ -591,31 +851,58 @@ function retryExercise() {
 }
 
 /* ── Décodeur (Groq API) ───────────────────────────── */
+
+/**
+ * Single entry point for all environments.
+ * - Production (Netlify): GROQ_API_KEY env var is set → dev_key is ignored by the function.
+ * - Local dev (file://, localhost): no env var → function uses dev_key from the request body.
+ *   The key is asked once per session and stored only in sessionStorage (never committed).
+ */
+async function callProxy(consigne) {
+  const h = location.hostname;
+  const local = location.protocol === "file:" || h === "localhost" || h === "127.0.0.1" || h === "";
+
+  const body = { consigne };
+
+  if (local) {
+    let key = sessionStorage.getItem("groq_key") || "";
+    if (!key) {
+      key = prompt(
+        "🔑 Mode local détecté.\n\nColle ta clé API Groq pour tester :\n(Stockée en sessionStorage uniquement — jamais dans le code)"
+      );
+      if (!key) return null;
+      sessionStorage.setItem("groq_key", key.trim());
+    }
+    body.dev_key = key.trim();
+  }
+
+  const res = await fetch("/api/decode", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error?.message || `Erreur HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
 async function decoder() {
   const consigne = document.getElementById("consigne").value.trim();
   if (!consigne) { alert("Écris d'abord une consigne !"); return; }
-  
+
   const btn = document.getElementById("btn");
   const loading = document.getElementById("loading");
-  btn.disabled = true; 
+  btn.disabled = true;
   loading.style.display = "flex";
   document.getElementById("result").innerHTML = "";
+  document.getElementById("traduction-inline").style.display = "none";
 
   try {
-    const response = await fetch("/api/decode", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ consigne })
-    });
+    const data = await callProxy(consigne);
+    if (!data) { btn.disabled = false; loading.style.display = "none"; return; } // user cancelled key prompt
 
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error?.message || `Erreur HTTP ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    // Groq returns choices[0].message.content which is a string (JSON)
     let parsed;
     try {
       const raw = data.choices[0].message.content.trim();
@@ -631,15 +918,40 @@ async function decoder() {
     document.getElementById("result").innerHTML = `<div class="error-msg">❌ Erreur : ${err.message}</div>`;
   }
 
-  btn.disabled = false; 
+  btn.disabled = false;
   loading.style.display = "none";
 }
 
 function afficherResultat(data) {
-  // Ensure properties exist before mapping to avoid "undefined" errors
+  // Handle off-topic consigne
+  if (data.hors_sujet) {
+    document.getElementById("result").innerHTML = `
+      <div class="hors-sujet-card">
+        <div class="hors-sujet-icon">🚫</div>
+        <div class="hors-sujet-content">
+          <p class="hors-sujet-fr">${data.message_fr}</p>
+          <p class="hors-sujet-ar">${data.message_ar}</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Handle ambiguous consigne (no software specified)
+  if (data.ambigu) {
+    document.getElementById("result").innerHTML = `
+      <div class="hors-sujet-card" style="background:#eff6ff; border-color:#bfdbfe;">
+        <div class="hors-sujet-icon">🤔</div>
+        <div class="hors-sujet-content">
+          <p class="hors-sujet-fr" style="color:#1e40af;">${data.message_fr}</p>
+          <p class="hors-sujet-ar" style="background:#dbeafe; color:#1e3a8a;">${data.message_ar}</p>
+        </div>
+      </div>`;
+    return;
+  }
+
   const verbesList = data.verbes_cles || data.verbes || [];
   const stepsList = data.etapes_detaillees || data.checklist || [];
-  const tradAr = data.traduction_complete_ar || data.traduction || "";
+  const tradAr = data.traduction_consigne_ar || data.traduction_complete_ar || data.traduction || "";
   const tip = data.astuce_du_prof || "";
   const objectif = data.analyse?.objectif || "";
 
@@ -649,19 +961,43 @@ function afficherResultat(data) {
       <div class="action">${v.action_concrete || v.explication || ""}</div>
       <div class="ar">${v.traduction_ar}</div>
     </div>`).join("");
-    
-  const stepsHTML = stepsList.map((e, i) =>
-    `<li><input type="checkbox" id="step${i}"><label for="step${i}">${e}</label></li>`
-  ).join("");
-  
+
+  // Steps can be bilingual objects {fr, ar} or plain strings (fallback)
+  const stepsHTML = stepsList.map((e, i) => {
+    const isBilingual = typeof e === "object" && e !== null && e.fr;
+    const frText = isBilingual ? e.fr : (typeof e === "string" ? e : "");
+    const arText = isBilingual ? e.ar : "";
+    return `
+      <li>
+        <input type="checkbox" id="step${i}">
+        <label for="step${i}">
+          <span class="step-fr">${frText}</span>
+          ${arText ? `<span class="step-ar">${arText}</span>` : ""}
+        </label>
+      </li>`;
+  }).join("");
+
+  const objectifAr = data.objectif_ar || "";
+
   let resultHTML = "";
-  
+
   if (objectif) {
     resultHTML += `
     <div class="section" style="animation-delay:.02s">
       <div class="section-header"><div class="section-icon" style="background:#e0f2fe">🎯</div><h2>Objectif</h2></div>
       <p style="font-size: 14px; line-height: 1.6;">${objectif}</p>
+      ${objectifAr ? `<p class="objectif-ar">${objectifAr}</p>` : ""}
     </div>`;
+  }
+
+  // Show translation inline under the consigne textarea
+  const inlineBox = document.getElementById("traduction-inline");
+  const inlineText = document.getElementById("traduction-inline-text");
+  if (tradAr) {
+    inlineText.textContent = tradAr;
+    inlineBox.style.display = "block";
+  } else {
+    inlineBox.style.display = "none";
   }
 
   resultHTML += `
@@ -672,19 +1008,7 @@ function afficherResultat(data) {
     <div class="section" style="animation-delay:.12s">
       <div class="section-header"><div class="section-icon" style="background:#d1fae5">✅</div><h2>Étapes à suivre</h2></div>
       <ul class="checklist">${stepsHTML}</ul>
-    </div>
-    <div class="section" style="animation-delay:.19s">
-      <div class="section-header"><div class="section-icon" style="background:#ede9fe">🌐</div><h2>Traduction en arabe</h2></div>
-      <p class="arabic-block">${tradAr}</p>
     </div>`;
-
-  if (tip) {
-    resultHTML += `
-    <div class="section" style="animation-delay:.25s">
-      <div class="section-header"><div class="section-icon" style="background:#fff9db">💡</div><h2>Astuce du Prof</h2></div>
-      <div class="tip-block">${tip}</div>
-    </div>`;
-  }
 
   document.getElementById("result").innerHTML = resultHTML;
 }

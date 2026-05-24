@@ -91,10 +91,10 @@
     .activity-btn .btn-arrow { opacity: 0.6; }
     .no-activity { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--surface2); border: 1.5px dashed var(--border); border-radius: 8px; font-size: 12px; color: var(--muted); }
 
-    /* ── Pexels/Pixabay image ── */
-    .pexels-wrap { border-radius: 10px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); position: relative; min-height: 140px; display: flex; align-items: center; justify-content: center; }
-    /* Changed object-fit to contain so diagrams/CPU look correct */
+    /* ── Illustration Container ── */
+    .pexels-wrap { border-radius: 10px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); position: relative; min-height: 140px; display: flex; align-items: center; justify-content: center; padding: 8px; box-sizing: border-box; }
     .pexels-wrap img { width: 100%; height: 180px; object-fit: contain; background: #fff; display: block; transition: opacity 0.3s; }
+    .pexels-wrap svg { max-width: 100%; max-height: 180px; display: block; margin: 0 auto; }
     .pexels-wrap .img-loader { font-size: 22px; animation: spin 1s linear infinite; position: absolute; }
     .pexels-credit { font-size: 10px; color: var(--muted); text-align: right; margin-top: 3px; }
     .pexels-credit a { color: var(--muted); text-decoration: none; }
@@ -123,7 +123,7 @@
 
   <main>
     <div class="page-header">
-      <h1>📖 Glossaire Informatique</h1>
+      <h1>💡 Glossaire Informatique</h1>
       <p>Termes essentiels du programme collège — définition, traduction arabe, exemples et activités interactives</p>
     </div>
 
@@ -147,7 +147,6 @@
     </div>
   </main>
 
-  LearningApps Modal
   <div class="modal-overlay" id="activityModal">
     <div class="modal-box">
       <div class="modal-head">
@@ -167,8 +166,9 @@
 
     function buildGlossary() {
       const letters = {};
+      const normalizeFirst = c => c.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
       GLOSSARY.forEach(item => {
-        const l = item.term[0].toUpperCase();
+        const l = normalizeFirst(item.term[0]);
         if (!letters[l]) letters[l] = [];
         letters[l].push(item);
       });
@@ -181,11 +181,13 @@
       allBtn.onclick = () => { filterByLetter(null); setActiveAlpha(allBtn); };
       alphaDiv.appendChild(allBtn);
 
-      Object.keys(letters).sort().forEach(l => {
+      const AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      AZ.forEach(l => {
         const btn = document.createElement('button');
         btn.className = 'alpha-btn';
         btn.textContent = l;
-        btn.onclick = () => { filterByLetter(l); setActiveAlpha(btn); };
+        if (!letters[l]) btn.style.opacity = '0.35';
+        btn.onclick = () => { if (letters[l]) { filterByLetter(l); setActiveAlpha(btn); } };
         alphaDiv.appendChild(btn);
       });
 
@@ -212,8 +214,11 @@
       card.dataset.term = item.term.toLowerCase();
       card.dataset.termOriginal = item.term;
       
-      if (item.img && item.img.startsWith('wp:')) {
-        card.dataset.imgWp = item.img.slice(3); // Wikipedia article title
+      // Determine image strategy markers
+      if (item.svg) {
+        card.dataset.hasSvg = "true";
+      } else if (item.img && item.img.startsWith('wp:')) {
+        card.dataset.imgWp = item.img.slice(3);
       } else if (item.img && item.img.startsWith('http')) {
         card.dataset.imgUrl = item.img;
       } else {
@@ -235,33 +240,28 @@
           </div>
         </div>
         <div class="card-def-preview">${item.def.substring(0, 90)}${item.def.length > 90 ? '…' : ''}</div>
-        <div class="expand-row">
-          <span style="font-size:11px">${hasActivity ? '🎮 Activité disponible' : ''}</span>
-          <button class="expand-btn" onclick="toggleCard(event, this.closest('.term-card').querySelector('.expand-toggle'))">Voir plus ▼</button>
-        </div>
+     
         <div class="card-body">
           <div class="body-section"><div class="body-label">📖 Définition complète</div><div class="def-full">${item.def}</div></div>
           <div class="body-section"><div class="body-label">🌐 Traduction arabe</div><div class="ar-full">${item.ar}</div></div>
           <div class="body-section"><div class="body-label">💡 Exemple concret</div><div class="example-box">${item.example}</div></div>
           <div class="body-section">
             <div class="body-label">🖼️ Illustration</div>
-            <div class="pexels-wrap" id="pexels-${item.term.replace(/\s+/g,'-').replace(/[^a-zA-Z0-9-]/g,'')}">
+            <div class="pexels-wrap" id="pexels-${getTermId(item.term)}">
               <span class="img-loader">⏳</span>
             </div>
-            <div class="pexels-credit" id="pexels-credit-${item.term.replace(/\s+/g,'-').replace(/[^a-zA-Z0-9-]/g,'')}"></div>
+            <div class="pexels-credit" id="pexels-credit-${getTermId(item.term)}"></div>
           </div>
-        
+      
         </div>`;
       return card;
     }
 
-    // Cache so we don't re-fetch the same term
     const pexelsCache = {};
 
     async function fetchPixabayImage(query) {
       if (pexelsCache[query]) return pexelsCache[query];
       const key = (typeof CONFIG !== 'undefined' && CONFIG.PIXABAY_API_KEY) ? CONFIG.PIXABAY_API_KEY : null;
-      // Safety check: do not call API if key is not set
       if (!key || key === 'YOUR_PIXABAY_API_KEY_HERE') return null;
       try {
         const url = `https://pixabay.com/api/?key=${key}&q=${encodeURIComponent(query)}&category=computer&image_type=photo&orientation=horizontal&per_page=5&safesearch=true`;
@@ -286,13 +286,13 @@
       const preview = card.querySelector('.card-def-preview');
       const expandRow = card.querySelector('.expand-row');
       const isOpen = body.classList.contains('open');
+      
       body.classList.toggle('open', !isOpen);
       card.classList.toggle('expanded', !isOpen);
       btn.textContent = isOpen ? '▼' : '▲';
       preview.classList.toggle('hidden', !isOpen);
       if (expandRow) expandRow.style.display = !isOpen ? 'none' : 'flex';
 
-      // --- CHANGE START: Improved Image Loading Logic ---
       if (!isOpen) {
         const term = card.dataset.termOriginal;
         const termId = getTermId(term);
@@ -319,8 +319,18 @@
             if (credit && creditHtml) credit.innerHTML = creditHtml;
           };
 
-          // 1. WIKIPEDIA REST API — fetches real verified thumbnail (no 404 risk)
-          if (card.dataset.imgWp) {
+          // 1. STRATEGIC INTERCEPT: Load custom vector schema if available
+          if (card.dataset.hasSvg === "true") {
+            const entry = GLOSSARY.find(g => g.term === term);
+            if (entry && entry.svg) {
+              wrap.innerHTML = entry.svg;
+              if (credit) credit.innerHTML = `<span style="color: var(--green); font-weight: 600;">⚡ Schéma didactique intégré</span>`;
+            } else {
+              showEmojiFallback();
+            }
+
+          // 2. WIKIPEDIA REST API FALLBACK
+          } else if (card.dataset.imgWp) {
             const article = card.dataset.imgWp;
             const apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(article)}`;
             fetch(apiUrl)
@@ -328,27 +338,24 @@
               .then(data => {
                 const src = data?.thumbnail?.source || (data?.originalimage?.source);
                 if (src) {
-                  showImg(src, `Source : <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(article)}" target="_blank" rel="noopener">Wikipedia — ${article}</a>`);
+                  showImg(src, `Source : <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(article)}" target="_blank" rel="noopener">Wikipedia</a>`);
                 } else {
                   showEmojiFallback();
                 }
               })
               .catch(() => { showEmojiFallback(); });
 
-          // 2. DIRECT URL (fallback if ever needed)
+          // 3. DIRECT STATIC URL ASSET
           } else if (card.dataset.imgUrl) {
             const imgUrl = card.dataset.imgUrl;
-            const isWikimedia = imgUrl.includes('wikimedia.org') || imgUrl.includes('wikipedia.org');
-            showImg(imgUrl, isWikimedia
-              ? `Source : <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener">Wikimedia Commons</a> — Licence libre`
-              : `Source : <a href="${imgUrl}" target="_blank" rel="noopener">Image libre de droits</a>`);
+            showImg(imgUrl, `Source : <a href="${imgUrl}" target="_blank" rel="noopener">Illustration</a>`);
 
-          // 3. PIXABAY API
+          // 4. PIXABAY DISCOVERY API
           } else {
             const query = card.dataset.imgQuery || term;
             fetchPixabayImage(query).then(photo => {
               if (photo) {
-                showImg(photo.src, `Photo : <a href="${photo.url}" target="_blank" rel="noopener">📷 ${photo.photographer}</a> — Pixabay`);
+                showImg(photo.src, `Photo : <a href="${photo.url}" target="_blank" rel="noopener">📷 ${photo.photographer}</a>`);
               } else {
                 showEmojiFallback();
               }
@@ -356,7 +363,6 @@
           }
         }
       }
-      // --- CHANGE END ---
     }
 
     function speakTerm(e, term) {
