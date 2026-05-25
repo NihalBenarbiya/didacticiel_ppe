@@ -42,24 +42,33 @@ const ACTIVITIES = [
     gridId: "grid-1-U1-C0",
     title:  "Composants de l'ordinateur",
     id:     "pk0j4yef526",
-    icon:   83,
-    color:  "#dbeafe",
     level:  "1APIC",
-    dot:    "#3b6ff0"
+   
   },
 
   // ── 1APIC · U1 · Système d'exploitation (C31) ────────────────
   {
     gridId: "grid-1-U1-C31",
-    title:  "Manipulation des fenêtres",
-    id:     "peje7efs326",
+    title:  "Système d'exploitation",
+    id:     "https://learningapps.org/watch?v=pqm24bmvk26",
     icon:   93,
     color:  "#dcfce7",
     level:  "1APIC",
     dot:    "#3b6ff0"
   },
 
-  // ── 1APIC · U2 · Traitement de textes (C11) ──────────────────
+  // ── 1APIC · U2 · Utilitaires et fichiers (C11a) ──────────────
+  {
+    gridId: "grid-1-U2-C11a",
+    title:  "Utilitaires et fichiers",
+    id:     "https://learningapps.org/watch?v=p8nezisen26",
+    icon:   83,
+    color:  "#fef9c3",
+    level:  "1APIC",
+    dot:    "#3b6ff0"
+  },
+
+  // ── 1APIC · U2 · Traitement de textes (C11b) ─────────────────
   {
     gridId: "grid-1-U2-C11b",
     title:  "Association",
@@ -69,8 +78,28 @@ const ACTIVITIES = [
     level:  "1APIC",
     dot:    "#3b6ff0"
   },
+  {
+    gridId: "grid-1-U2-C11b",
+    title:  "Traitement de texte",
+    id:     "https://learningapps.org/watch?v=p6pud61ht26",
+    icon:   71,
+    color:  "#fce7f3",
+    level:  "1APIC",
+    dot:    "#3b6ff0"
+  },
 
-  // ── Ajoutez vos activités 2APIC ici ──────────────────────────
+  // ── 1APIC · U3 · Recherches documentaires (C21) ──────────────
+  {
+    gridId: "grid-1-U3-C21",
+    title:  "Recherche documentaire",
+    id:     "https://learningapps.org/watch?v=pngbzjh1v26",
+    icon:   86,
+    color:  "#ede9fe",
+    level:  "1APIC",
+    dot:    "#3b6ff0"
+  },
+
+  // ── 2APIC · U3 · Tableurs (C12) ──────────────────────────────
   {
     gridId: "grid-2-U3-C12",
     title:  "tableur",
@@ -81,15 +110,15 @@ const ACTIVITIES = [
     dot:    "#059669"
   },
 
-  // ── Ajoutez vos activités 3APIC ici ──────────────────────────
-  // {
-  //   gridId: "grid-3-U4-C23",
-  //   title:  "Nom de l'activité",
-  //   id:     "CODE_LEARNINGAPPS",
-  //   icon:   86,
-  //   color:  "#fef3c7",
-  //   level:  "3APIC",
-  //   dot:    "#d97706"
-  // },
+  // ── 3APIC · U1 · Topologie réseau (C0) ───────────────────────
+  {
+    gridId: "grid-3-U1-C0",
+    title:  "Réseau",
+    id:     "https://learningapps.org/watch?v=po7ebryw226",
+    icon:   86,
+    color:  "#fef3c7",
+    level:  "3APIC",
+    dot:    "#d97706"
+  },
 
 ];

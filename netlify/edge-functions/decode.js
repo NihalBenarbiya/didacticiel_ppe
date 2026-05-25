@@ -200,6 +200,21 @@ XLOGO :
 - Effacer écran : taper VE dans la zone de saisie
 - Changer couleur : COULEUR [r g b] ou CRAYONCOULEUR n
 
+WINDOWS (Gestion de fichiers & système) :
+- Ouvrir l'Explorateur : clic droit sur Démarrer > Explorateur de fichiers (ou touche Windows + E)
+- Créer un dossier : clic droit dans l'espace vide > Nouveau > Dossier > taper le nom > Entrée
+- Renommer : clic droit sur le fichier/dossier > Renommer > taper le nouveau nom > Entrée (ou F2)
+- Copier : clic droit > Copier (ou Ctrl+C) | Coller : clic droit > Coller (ou Ctrl+V)
+- Couper/Déplacer : clic droit > Couper (ou Ctrl+X) > naviguer vers destination > Coller
+- Supprimer : sélectionner > touche Suppr (ou clic droit > Supprimer) → va dans la Corbeille
+- Vider la corbeille : clic droit sur l'icône Corbeille sur le bureau > Vider la corbeille
+- Sélectionner plusieurs fichiers : maintenir Ctrl + cliquer sur chaque fichier
+- Sélectionner tout : Ctrl+A
+- Chercher un fichier : barre de recherche en haut à droite de l'Explorateur > taper le nom
+- Propriétés : clic droit sur fichier/dossier > Propriétés
+- Créer un raccourci : clic droit sur fichier > Envoyer vers > Bureau (créer un raccourci)
+- Afficher les extensions : Affichage > Options > Affichage > décocher "Masquer les extensions"
+
 ════════════════════════════════════════
 RÈGLES PÉDAGOGIQUES CRITIQUES
 ════════════════════════════════════════
@@ -211,7 +226,10 @@ RÈGLES PÉDAGOGIQUES CRITIQUES
 6. Sois concret : dire "clique sur le bouton G dans l'onglet Accueil" et non "applique le gras".
 7. Si la consigne ne mentionne aucun logiciel et que le verbe seul ne suffit pas à l'identifier (ex: "saisir", "enregistrer", "ouvrir", "fermer", "créer"), retourner le JSON ambigu plutôt que d'inventer un logiciel par défaut.
    Exemples AMBIGU → retourner JSON ambigu : "saisir le texte", "enregistre ton travail", "ouvre le fichier", "crée un nouveau fichier"
-   Exemples NON AMBIGU (logiciel clairement identifiable) : "saisir les données dans le tableau" → Excel, "saisir le titre de la présentation" → PowerPoint, "saisir une commande av 100" → XLOGO, "saisir un paragraphe et le mettre en gras" → Word`;
+   Exemples NON AMBIGU (logiciel clairement identifiable) : "saisir les données dans le tableau" → Excel, "saisir le titre de la présentation" → PowerPoint, "saisir une commande av 100" → XLOGO, "saisir un paragraphe et le mettre en gras" → Word
+8. WINDOWS / GESTION DE FICHIERS — ces consignes sont NON AMBIGUËS même sans mention explicite de "Windows" :
+   → Tout ce qui concerne : fichier, dossier, sous-dossier, explorateur, bureau, corbeille, raccourci, barre des tâches, icône, renommer, déplacer, copier-coller un fichier/dossier, créer un dossier, supprimer un fichier = logiciel_concerne: "Windows"
+   Exemples : "copie le fichier dans le dossier Images" → Windows, "crée un dossier nommé Travaux" → Windows, "renomme le fichier" → Windows, "vide la corbeille" → Windows`;
 
   function buildUserPrompt(consigne) {
     return `Analyse cette consigne informatique pour un élève de collège marocain : "${consigne}"
@@ -252,7 +270,7 @@ RÈGLES STRICTES :
 1. JSON uniquement, aucun texte avant ou après.
 2. Utilise UNIQUEMENT la terminologie arabe officielle du système prompt.
 3. Chaque étape est un objet {"fr": "...", "ar": "..."} — la version française ET sa traduction arabe.
-4. Les étapes mentionnent le chemin exact (menu ou barre d'outils) pour le logiciel détecté. Si aucun logiciel n'est mentionné ET que la consigne est trop générique (ex: "saisir le texte", "enregistrer", "ouvrir"), retourne ce JSON spécial : {"ambigu": true, "message_fr": "Cette consigne peut s'appliquer à plusieurs logiciels. Dans quel logiciel travailles-tu ? (Word / Excel / PowerPoint / Paint / XLOGO...)", "message_ar": "هذا التمرين قد ينطبق على عدة برامج. في أي برنامج تعمل؟ (Word / Excel / PowerPoint / Paint / XLOGO...)"}
+4. Les étapes mentionnent le chemin exact (menu ou barre d'outils) pour le logiciel détecté. Si aucun logiciel n'est mentionné ET que la consigne est trop générique (ex: "saisir le texte", "enregistrer", "ouvrir"), retourne ce JSON spécial : {"ambigu": true, "message_fr": "Cette consigne peut s'appliquer à plusieurs contextes. Dans quel logiciel ou environnement travailles-tu ? (Word / Excel / PowerPoint / Paint / XLOGO / Windows)", "message_ar": "هذا التمرين قد ينطبق على عدة برامج أو بيئات. في أي برنامج أو بيئة تعمل؟ (Word / Excel / PowerPoint / Paint / XLOGO / Windows)"}
 5. "traduction_consigne_ar" = traduction courte de la consigne originale uniquement (pas les étapes).
 6. "objectif_ar" = traduction arabe de l'objectif (commence par "الهدف:").
 7. Pas de champ "astuce_du_prof" dans la réponse.
