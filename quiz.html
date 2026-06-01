@@ -428,7 +428,7 @@ var quizTheme    = "Quiz";   // fallback — replaced automatically below
   var appId = match[1];
 
   // LearningApps public JSON API
- fetch("/.netlify/edge-functions/quiz-title?id=" + appId)
+ fetch("/.netlify/functions/quiz-title?id=" + appId)
     .then(function(r){ return r.json(); })
     .then(function(data){
       // The API returns { title: "...", ... }
