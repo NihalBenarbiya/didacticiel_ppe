@@ -482,7 +482,7 @@ function startSession() {
   nomErr.classList.remove("visible");
   clsErr.classList.remove("visible");
   codeErr.classList.remove("visible");
-
+var ACCESS_CODE = "EXCEL2025";
   if (codeEl.value.trim().toUpperCase() !== ACCESS_CODE) {
     codeEl.classList.add("error");
     codeErr.textContent = "Code incorrect. Demande à ton professeur.";
