@@ -23,7 +23,10 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-     headers: { "Content-Type": "application/json" },
+headers: {
+  "Content-Type": "application/json",
+  "Cache-Control": "no-store"
+},
       body: JSON.stringify({ title: title || "Quiz" }),
     };
 
