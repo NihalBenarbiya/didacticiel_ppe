@@ -350,16 +350,58 @@
 
   .results-count { font-size: 12px; color: var(--muted); margin-top: 14px; }
   .results-count strong { color: var(--accent); }
+
+  /* ── ACCESS CODE SCREEN ── */
+  #screen-code { align-items:center; justify-content:center; background:var(--bg); }
+  .code-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:40px 44px 36px; width:420px; max-width:95vw;
+    box-shadow:0 2px 8px rgba(60,80,180,0.05); text-align:center;
+  }
+  .code-badge {
+    display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.6px; color:#dc2626; background:#fff5f5;
+    padding:4px 12px; border-radius:99px; margin-bottom:16px;
+  }
+  .code-title { font-size:20px; font-weight:700; color:var(--text); margin-bottom:6px; }
+  .code-sub   { font-size:14px; color:var(--muted); margin-bottom:28px; line-height:1.6; }
+  .code-input {
+    width:100%; padding:13px 14px; border:1.5px solid var(--border); border-radius:8px;
+    font-family:var(--mono); font-size:18px; font-weight:700; color:var(--text);
+    background:var(--surface2); text-align:center; letter-spacing:4px; text-transform:uppercase;
+    transition:border-color .2s; outline:none; margin-bottom:6px;
+  }
+  .code-input::placeholder { color:var(--muted); letter-spacing:2px; font-size:14px; font-weight:400; }
+  .code-input:focus { border-color:var(--accent); background:var(--surface); }
+  .code-input.error { border-color:#dc2626; background:#fff5f5; }
+  /* ── SELECT ── */
+  .field-group select {
+    width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:8px;
+    font-family:var(--font); font-size:14px; color:var(--text); background:var(--surface2);
+    transition:border-color .2s; outline:none; appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%237b8299' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center;
+  }
+  .field-group select:focus { border-color:var(--accent); background-color:var(--surface); }
+  .field-group select.error { border-color:#dc2626; background-color:#fff5f5; }
 </style>
 
 <script src="SCORM_API_wrapper.js"></script>
+<script src="config.js"></script>
+<script src="classes.js"></script>
 <script>
 /* ── SCORM ── */
-var scorm = pipwerks ? pipwerks.SCORM : null;
+var scorm = (typeof pipwerks !== "undefined") ? pipwerks.SCORM : null;
 window.onload = function(){
   if(scorm) scorm.init();
   var navH = document.querySelector("nav") ? document.querySelector("nav").offsetHeight : 52;
   document.documentElement.style.setProperty("--nav-h", navH + "px");
+  var sel = document.getElementById("classe");
+  (CLASSES || []).forEach(function(cl){
+    var opt = document.createElement("option");
+    opt.value = cl; opt.textContent = cl;
+    sel.appendChild(opt);
+  });
   showEntry();
 };
 window.onunload = function(){ if(scorm) scorm.quit(); };
@@ -368,17 +410,44 @@ window.onunload = function(){ if(scorm) scorm.quit(); };
 var studentName  = "";
 var studentClass = "";
 var finalScore   = 0;
+var scoreSaved   = false;
+var quizTheme    = "Quiz";   // fallback — replaced automatically below
+
+/* ── AUTO-FETCH THEME FROM LEARNINGAPPS ── */
+(function fetchQuizTheme() {
+  // Extract the app ID from the iframe src
+  var iframe = document.getElementById("quiz-frame");
+  if (!iframe) {
+    // DOM may not be ready yet — wait for it
+    document.addEventListener("DOMContentLoaded", fetchQuizTheme);
+    return;
+  }
+  var src   = iframe.src || iframe.getAttribute("src") || "";
+  var match = src.match(/[?&]v=([A-Za-z0-9]+)/);
+  if (!match) return;
+  var appId = match[1];
+
+  // LearningApps public JSON API
+ fetch("/.netlify/edge-functions/quiz-title?id=" + appId)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      // The API returns { title: "...", ... }
+      var title = (data && data.title) ? data.title.trim() : "";
+      if (title) quizTheme = title;
+    })
+    .catch(function(){
+      // Network error or CORS — keep the fallback value
+    });
+})();
 
 /* ── SCREENS ── */
-function showEntry() {
-  setScreen("screen-entry");
-}
+function showEntry() { setScreen("screen-entry"); }
 
 function showQuiz() {
   // Update header
   document.getElementById("header-name").textContent = studentName;
   document.getElementById("header-class").textContent = studentClass;
-  var initials = studentName.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
+  var initials = studentName.split(" ").map(function(w){ return w[0]; }).join("").toUpperCase().slice(0,2);
   document.getElementById("header-avatar").textContent = initials;
   setScreen("screen-quiz");
 }
@@ -404,17 +473,29 @@ function startSession() {
   var clsErr   = document.getElementById("classe-err");
   var ok = true;
 
+  var codeEl  = document.getElementById("access-code");
+  var codeErr = document.getElementById("code-err");
+
   nomEl.classList.remove("error");
   classeEl.classList.remove("error");
+  codeEl.classList.remove("error");
   nomErr.classList.remove("visible");
   clsErr.classList.remove("visible");
+  codeErr.classList.remove("visible");
 
+  if (codeEl.value.trim().toUpperCase() !== ACCESS_CODE) {
+    codeEl.classList.add("error");
+    codeErr.textContent = "Code incorrect. Demande à ton professeur.";
+    codeErr.classList.add("visible");
+    codeEl.value = "";
+    ok = false;
+  }
   if (!nomEl.value.trim()) {
     nomEl.classList.add("error");
     nomErr.classList.add("visible");
     ok = false;
   }
-  if (!classeEl.value.trim()) {
+  if (!classeEl.value) {
     classeEl.classList.add("error");
     clsErr.classList.add("visible");
     ok = false;
@@ -422,7 +503,8 @@ function startSession() {
   if (!ok) return;
 
   studentName  = nomEl.value.trim();
-  studentClass = classeEl.value.trim();
+  studentClass = classeEl.value;
+  scoreSaved   = false;
   showQuiz();
 }
 
@@ -430,10 +512,13 @@ function startSession() {
 var SHEET_URL = "https://script.google.com/macros/s/AKfycbz8MPLvIadVPsloNJEUXcKchXSdQJ08OTRNhgd0FGcyCGQeebafCtngYbmUXlfcdTjtfg/exec";
 
 function saveScore(score) {
+  if (scoreSaved) return;
+  scoreSaved = true;
+
   var result = {
     nom:    studentName  || "Inconnu",
     classe: studentClass || "Inconnue",
-    theme:  "Tableurs",
+    theme:  quizTheme,
     score:  score,
     date:   new Date().toLocaleString("fr-FR")
   };
@@ -445,7 +530,6 @@ function saveScore(score) {
     body:   JSON.stringify(result)
   });
 
-  return result;
 }
 
 /* ── LEARNINGAPPS MESSAGE ── */
@@ -464,25 +548,20 @@ window.addEventListener('message', function(e) {
 function logout() {
   studentName  = "";
   studentClass = "";
+  scoreSaved   = false;
   // Clear form fields
   document.getElementById("nom").value    = "";
   document.getElementById("classe").value = "";
   // Reload the iframe so next student starts fresh
   var frame = document.getElementById("quiz-frame");
   frame.src = frame.src;
-  // Back to entry screen
-  setScreen("screen-entry");
-  // Focus first field
+  showEntry();
   setTimeout(function(){ document.getElementById("nom").focus(); }, 100);
 }
 
 /* ── ENTER key on inputs ── */
 document.addEventListener("DOMContentLoaded", function(){
-  ["nom","classe"].forEach(function(id){
-    document.getElementById(id).addEventListener("keydown", function(e){
-      if (e.key === "Enter") startSession();
-    });
-  });
+  document.getElementById("nom").addEventListener("keydown", function(e){ if(e.key==="Enter") startSession(); });
 });
 </script>
 </head>
@@ -509,6 +588,12 @@ document.addEventListener("DOMContentLoaded", function(){
     <p class="entry-subtitle">Remplis tes informations pour commencer le quiz.</p>
 
     <div class="field-group">
+      <label for="access-code">Code d&rsquo;acc&egrave;s</label>
+      <input type="text" id="access-code" placeholder="Code du professeur" autocomplete="off" maxlength="20" style="text-transform:uppercase;letter-spacing:2px;font-weight:700;">
+      <p class="error-msg" id="code-err">Code incorrect.</p>
+    </div>
+
+    <div class="field-group">
       <label for="nom">Nom complet</label>
       <input type="text" id="nom" placeholder="Ex :Mohammed" autocomplete="off">
       <p class="error-msg" id="nom-err">Merci d'indiquer ton nom.</p>
@@ -516,8 +601,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
     <div class="field-group">
       <label for="classe">Classe</label>
-      <input type="text" id="classe" placeholder="Ex : 2/4" autocomplete="off">
-      <p class="error-msg" id="classe-err">Merci d'indiquer ta classe.</p>
+      <select id="classe">
+        <option value="">-- Sélectionne ta classe --</option>
+      </select>
+      <p class="error-msg" id="classe-err">Merci de sélectionner ta classe.</p>
     </div>
 
     <button class="btn-start" onclick="startSession()">Commencer le quiz →</button>
