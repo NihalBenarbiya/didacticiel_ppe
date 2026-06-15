@@ -23,7 +23,7 @@ const GLOSSARY = [
   {
     term: "Adresse IP",
     img: "wp:IP address",
-    icon: "🌐", color: "#dbeafe",
+    icon: "🌐", 
     ar: "عنوان IP — رقم فريد يُعطى لكل جهاز متصل بالإنترنت.",
     def: "Numéro unique attribué à chaque ordinateur sur un réseau. C'est comme l'adresse postale de ton ordinateur sur Internet.",
     example: "Quand tu te connectes à un site, ton ordinateur utilise son adresse IP pour envoyer et recevoir les données. Exemple : 192.168.1.1",

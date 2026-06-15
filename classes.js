@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────
 
 var CLASSES = [
-  "1AC1", "1AC2", "1AC3", "1AC4", "1AC5",
-  "2AC1", "2AC2", "2AC3", "2AC4", "2AC5",
-  "3AC1", "3AC2", "3AC3", "3AC4", "3AC5"
+  "1APIC1", "1APIC2", "1APIC3", "1APIC4", "1APIC5",
+  "2APIC1", "2APIC2", "2APIC3", "2APIC4", "2APIC5",
+  "3APIC1", "3APIC2", "3APIC3", "3APIC4", "3APIC5"
 ];
